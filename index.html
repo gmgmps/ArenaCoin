@@ -1,396 +1,235 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ArenaCoin</title>
+    <!-- استدعاء ملف مكتبة تيليجرام الأساسية -->
+    <script src="https://telegram.org"></script>
+    
+    <!-- استدعاء مكتبات الـ Firebase الحديثة والمتوافقة مع تيليجرام -->
+    <script src="https://gstatic.com"></script>
+    <script src="https://gstatic.com"></script>
 
-<title>ArenaCoin</title>
-
-<ttps://telegram.org/js/telegram-web-app.jsscript>
-
-<style>
-
-:root{
---bg:#0f172a;
---card:#1e293b;
---orange:#ff7a00;
---blue:#00f0ff;
---text:#ffffff;
-}
-
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-}
-
-body{
-background:var(--bg);
-font-family:Tahoma,sans-serif;
-color:var(--text);
-padding:15px;
-text-align:center;
-}
-
-.card{
-background:var(--card);
-padding:20px;
-border-radius:20px;
-margin-bottom:20px;
-box-shadow:0 0 20px rgba(0,0,0,.3);
-}
-
-.avatar{
-width:90px;
-height:90px;
-border-radius:50%;
-border:3px solid var(--blue);
-object-fit:cover;
-}
-
-.name{
-font-size:22px;
-font-weight:bold;
-margin-top:10px;
-}
-
-.level{
-margin-top:10px;
-display:inline-block;
-padding:8px 16px;
-background:var(--orange);
-border-radius:20px;
-}
-
-.balance{
-font-size:32px;
-color:var(--blue);
-margin-top:15px;
-font-weight:bold;
-}
-
-.energy-box{
-margin-top:15px;
-}
-
-.energy-bg{
-height:14px;
-background:#334155;
-border-radius:20px;
-overflow:hidden;
-margin-top:8px;
-}
-
-.energy-fill{
-height:100%;
-width:100%;
-background:linear-gradient(90deg,#00f0ff,#00ff87);
-}
-
-.wheel-container{
-position:relative;
-width:280px;
-height:280px;
-margin:25px auto;
-}
-
-.pointer{
-position:absolute;
-top:-12px;
-left:50%;
-transform:translateX(-50%);
-width:0;
-height:0;
-border-left:15px solid transparent;
-border-right:15px solid transparent;
-border-top:30px solid white;
-z-index:10;
-}
-
-.wheel{
-width:100%;
-height:100%;
-border-radius:50%;
-border:8px solid #334155;
-transition:transform 4s ease-out;
-
-background:
-conic-gradient(
-#ff4757 0deg 45deg,
-#ffa502 45deg 90deg,
-#2ed573 90deg 135deg,
-#1e90ff 135deg 180deg,
-#a55eea 180deg 225deg,
-#ff6348 225deg 270deg,
-#00d2d3 270deg 315deg,
-#eccc68 315deg 360deg
-);
-}
-
-.btn{
-background:linear-gradient(135deg,var(--orange),#d35400);
-border:none;
-padding:15px 35px;
-border-radius:15px;
-font-size:18px;
-font-weight:bold;
-color:white;
-cursor:pointer;
-}
-
-.reward{
-margin-top:20px;
-font-size:22px;
-font-weight:bold;
-color:#00ff87;
-}
-
-</style>
+    <style>
+        :root {
+            --bg: #0f172a;
+            --card: #1e293b;
+            --orange: #ff7a00;
+            --blue: #00f0ff;
+            --text: #ffffff;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: var(--bg);
+            font-family: Tahoma, sans-serif;
+            color: var(--text);
+            padding: 15px;
+            text-align: center;
+        }
+        .card {
+            background: var(--card);
+            padding: 20px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 0 20px rgba(0,0,0,.3);
+        }
+        .avatar {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            border: 3px solid var(--blue);
+            object-fit: cover;
+        }
+        .name { font-size: 22px; font-weight: bold; margin-top: 10px; }
+        .balance { font-size: 32px; color: var(--blue); margin-top: 15px; font-weight: bold; }
+        .energy-box { margin-top: 15px; }
+        .energy-bg { height: 14px; background: #334155; border-radius: 20px; overflow: hidden; margin-top: 8px; }
+        .energy-fill { height: 100%; width: 100%; background: linear-gradient(90deg, #00f0ff, #00ff87); transition: width 0.3s ease; }
+        .wheel-container { position: relative; width: 280px; height: 280px; margin: 25px auto; }
+        .pointer {
+            position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+            width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 30px solid white; z-index: 10;
+        }
+        .wheel {
+            width: 100%; height: 100%; border-radius: 50%; border: 8px solid #334155;
+            transition: transform 4s cubic-bezier(0.1, 0.8, 0.1, 1);
+            background: conic-gradient(#ff4757 0deg 45deg, #ffa502 45deg 90deg, #2ed573 90deg 135deg, #1e90ff 135deg 180deg, #a55eea 180deg 225deg, #ff6348 225deg 270deg, #00d2d3 270deg 315deg, #eccc68 315deg 360deg);
+        }
+        .btn {
+            background: linear-gradient(135deg, var(--orange), #d35400); border: none; padding: 15px 35px;
+            border-radius: 15px; font-size: 18px; font-weight: bold; color: white; cursor: pointer;
+        }
+        .reward { margin-top: 20px; font-size: 22px; font-weight: bold; color: #00ff87; height: 30px; }
+    </style>
 </head>
-
 <body>
 
-<div class="card">
-
-<img
-id="userPhoto"
-class="avatar"
-src="https://ui-avatars.com/api/?name=Player">
-
-<div id="userName" class="name">
-ج
-⭐ المستوى <span id="level">1</span>
-</div>
-
-<div class="balance">
-🪙 <span id="coins">0</span>
-</div>
-
-<div class="energy-box">
-
-<div>
-⚡ الطاقة:
-<span id="energyText">100</span>/100
-</div>
-
-<div class="energy-bg">
-<div
-id="energyFill"
-class="energy-fill">
-</div>
-</div>
-
-</div>
-
-</div>
-
-<div class="wheel-container">
-
-<div class="pointer"></div>
-
-<div
-id="wheel"
-class="wheel">
-</div>
-
-</div>
-
-<button
-class="btn"
-onclick="spinWheel()">
-🎡 أدر العجلة
-</button>
-
-<div id="rewardBox" class="reward"></div>
-
-<audio
-id="bgMusic"
-loop>
-music.mp3
-</audio>
-
-<script>
-
-const tg = window.Telegram?.WebApp;
-
-if(tg){
-tg.ready();
-tg.expand();
-}
-
-let coins =
-parseInt(localStorage.getItem("coins")) || 0;
-
-let energy =
-parseInt(localStorage.getItem("energy")) || 100;
-
-let level =
-parseInt(localStorage.getItem("level")) || 1;
-
-const rewards = [
-
-{
-name:"10 عملات",
-type:"coins",
-value:10
-},
-
-{
-name:"25 عملة",
-type:"coins",
-value:25
-},
-
-{
-name:"50 عملة",
-type:"coins",
-value:50
-},
-
-{
-name:"100 عملة",
-type:"coins",
-value:100
-},
-
-{
-name:"20 طاقة",
-type:"energy",
-value:20
-},
-
-{
-name:"30 طاقة",
-type:"energy",
-value:30
-},
-
-{
-name:"ترقية مستوى",
-type:"level",
-value:1
-},
-
-{
-name:"200 عملة",
-type:"coins",
-value:200
-}
-
-];
-
-function updateUI(){
-
-document.getElementById("coins").innerText =
-coins;
-
-document.getElementById("level").innerText =
-level;
-
-document.getElementById("energyText").innerText =
-energy;
-
-document.getElementById("energyFill").style.width =
-energy + "%";
-
-localStorage.setItem("coins",coins);
-localStorage.setItem("energy",energy);
-localStorage.setItem("level",level);
-
-}
-
-updateUI();
-
-if(tg?.initDataUnsafe?.user){
-
-const user =
-tg.initDataUnsafe.user;
-
-document.getElementById("userName").innerText =
-user.first_name;
-
-if(user.photo_url){
-
-document.getElementById("userPhoto").src =
-user.photo_url;
-
-}
-
-}else{
-
-document.getElementById("userName").innerText =
-"لاعب الحظ";
-
-}
-
-function spinWheel(){
-
-if(energy < 20){
-
-alert("⚡ لا توجد طاقة كافية");
-
-return;
-
-}
-
-energy -= 20;
-
-const index =
-Math.floor(
-Math.random()*rewards.length
-);
-
-const reward =
-rewards[index];
-
-const wheel =
-document.getElementById("wheel");
-
-const rotation =
-3600 + (index * 45);
-
-wheel.style.transform =
-`rotate(${rotation}deg)`;
-
-setTimeout(()=>{
-
-if(reward.type==="coins"){
-coins += reward.value;
-}
-
-if(reward.type==="energy"){
-energy += reward.value;
-
-if(energy > 100){
-energy = 100;
-}
-}
-
-if(reward.type==="level"){
-level += reward.value;
-}
-
-document.getElementById("rewardBox").innerText =
-"🎉 ربحت: " + reward.name;
-
-updateUI();
-
-},4000);
-
-}
-
-document.body.addEventListener("click",()=>{
-
-const music =
-document.getElementById("bgMusic");
-
-music.volume = 0.2;
-
-music.play().catch(()=>{});
-
-},{once:true});
-
-</script>
-
-</body>
-</html>
+    <div class="card">
+        <img id="userPhoto" class="avatar" src="https://ui-avatars.com">
+        <div class="name">
+            <span id="userName">جاري التحميل...</span>
+            <br>
+            <span style="font-size: 16px; color: var(--orange); font-weight: normal; margin-top: 5px; display: inline-block;">
+                ⭐ المستوى <span id="level">1</span>
+            </span>
+        </div>
+        <div class="balance">🪙 <span id="coins">0</span></div>
+        <div class="energy-box">
+            <div>⚡ الطاقة: <span id="energyText">100</span>/100</div>
+            <div class="energy-bg"><div id="energyFill" class="energy-fill"></div></div>
+        </div>
+    </div>
+
+    <div class="wheel-container">
+        <div class="pointer"></div>
+        <div id="wheel" class="wheel"></div>
+    </div>
+
+    <button class="btn" onclick="spinWheel()">🎡 أدر العجلة</button>
+    <div id="rewardBox" class="reward"></div>
+
+    <script>
+        // 1. تهيئة تيليجرام
+        const webapp = window.Telegram?.WebApp;
+        if (webapp) {
+            webapp.ready();
+            webapp.expand();
+        }
+
+        // 2. إعداد وتهيئة Firebase بمفاتيح مشروعك الحقيقي
+        const firebaseConfig = {
+            apiKey: "AIzaSyBNI0BrFz4LqPPALvtUAbNhZOC6GDc7hsE",
+            authDomain: "://firebaseapp.com",
+            projectId: "arenacoin-f0cc8",
+            storageBucket: "arenacoin-f0cc8.firebasestorage.app",
+            messagingSenderId: "415637288138",
+            appId: "1:415637288138:web:4acd633f6fedcdc8513033",
+            measurementId: "G-BT6316JW2S"
+        };
+
+        // تفعيل فحص الأخطاء لمنع تجمد التطبيق في حال تأخر خوادم جوجل
+        let db;
+        try {
+            firebase.initializeApp(firebaseConfig);
+            db = firebase.firestore();
+        } catch(e) {
+            console.log("Firebase Init Error: ", e);
+        }
+
+        // 3. إعداد متغيرات اللعبة الأساسية
+        let coins = parseInt(localStorage.getItem("coins")) || 0;
+        let energy = parseInt(localStorage.getItem("energy")) || 100;
+        let level = parseInt(localStorage.getItem("level")) || 1;
+        let isSpinning = false;
+        let currentRotation = 0;
+        let userId = "guest_user";
+        let firstName = "لاعب الحظ";
+
+        // جوائز العجلة
+        const rewards = [
+            { name: "10 عملات", type: "coins", value: 10 },
+            { name: "25 عملة", type: "coins", value: 25 },
+            { name: "50 عملة", type: "coins", value: 50 },
+            { name: "100 عملة", type: "coins", value: 100 },
+            { name: "20 طاقة", type: "energy", value: 20 },
+            { name: "30 طاقة", type: "energy", value: 30 },
+            { name: "ترقية مستوى", type: "level", value: 1 },
+            { name: "200 عملة", type: "coins", value: 200 }
+        ];
+
+        // 4. دالة تحديث الواجهة وحفظ البيانات محلياً وسحابياً
+        function updateUI() {
+            document.getElementById("coins").innerText = coins;
+            document.getElementById("level").innerText = level;
+            document.getElementById("energyText").innerText = energy;
+            document.getElementById("energyFill").style.width = energy + "%";
+
+            // حفظ محلي سريع
+            localStorage.setItem("coins", coins);
+            localStorage.setItem("energy", energy);
+            localStorage.setItem("level", level);
+
+            // حفظ سحابي في قاعدة البيانات Firestore باسم الـ ID الخاص بالمستخدم
+            if (db && userId !== "guest_user") {
+                db.collection("players").doc(userId).set({
+                    telegram_id: userId,
+                    username: firstName,
+                    coins: coins,
+                    energy: energy,
+                    level: level,
+                    last_active: firebase.firestore.FieldValue.serverTimestamp()
+                }, { merge: true }).catch(err => console.log("Firebase Save Error:", err));
+            }
+        }
+
+        // 5. جلب بيانات تيليجرام والربط السحابي عند التشغيل
+        if (webapp && webapp.initDataUnsafe && webapp.initDataUnsafe.user) {
+            const user = webapp.initDataUnsafe.user;
+            userId = String(user.id);
+            firstName = user.first_name || "لاعب Arena";
+            
+            document.getElementById("userName").innerText = firstName;
+            if (user.photo_url) {
+                document.getElementById("userPhoto").src = user.photo_url;
+            } else {
+                document.getElementById("userPhoto").src = "https://ui-avatars.com" + encodeURIComponent(firstName) + "&background=ff7a00&color=fff";
+            }
+        } else {
+            document.getElementById("userName").innerText = "لاعب تجريبي";
+        }
+
+        // محاولة جلب النقاط القديمة للمستخدم من السيرفر السحابي فور دخوله
+        if (db && userId !== "guest_user") {
+            db.collection("players").doc(userId).get().then((doc) => {
+                if (doc.exists) {
+                    const data = doc.data();
+                    coins = data.coins !== undefined ? data.coins : coins;
+                    energy = data.energy !== undefined ? data.energy : energy;
+                    level = data.level !== undefined ? data.level : level;
+                }
+                updateUI();
+            }).catch((e) => {
+                console.log("Firebase Fetch Error, using local database instead:", e);
+                updateUI();
+            });
+        } else {
+            updateUI();
+        }
+
+        // 6. ميكانيكية تدوير العجلة المضمونة
+        function spinWheel() {
+            if (isSpinning) return;
+            if (energy < 20) {
+                if (webapp) webapp.showAlert("⚡ لا توجد طاقة كافية!");
+                else alert("⚡ لا توجد طاقة كافية");
+                return;
+            }
+
+            isSpinning = true;
+            energy -= 20;
+            updateUI();
+
+            document.getElementById("rewardBox").innerText = "⏳ جاري التدوير...";
+            const index = Math.floor(Math.random() * rewards.length);
+            const reward = rewards[index];
+
+            const degreesPerSegment = 45;
+            const targetAngle = (8 - index) * degreesPerSegment; 
+            currentRotation += 3600 + targetAngle - (currentRotation % 360);
+
+            const wheel = document.getElementById("wheel");
+            wheel.style.transform = `rotate(${currentRotation}deg)`;
+
+            setTimeout(() => {
+                if (reward.type === "coins") coins += reward.value;
+                else if (reward.type === "energy") { energy += reward.value; if (energy > 100) energy = 100; }
+                else if (reward.type === "level") level += reward.value;
+
+                document.getElementById("rewardBox").innerText = "🎉 ربحت: " + reward.name;
+                updateUI(); // ستقوم هذه الدالة تلقائياً بالحفظ في Firebase الآن!
+                isSpinning = false;
+            }, 4000);
+        }
+
+        // شحن طاقة تلقائي بسيط كل دقيقة
