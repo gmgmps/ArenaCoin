@@ -1,49 +1,225 @@
-// تفعيل Telegram WebApp بشكل آمن
-const webapp = window.Telegram?.WebApp;
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ArenaCoin</title>
 
-if (webapp) {
-    webapp.ready();
-    webapp.expand();
+<ttps://telegram.org/js/telegram-web-app.jsscript>
+
+<style>
+body{
+    background:#0f172a;
+    color:white;
+    font-family:Segoe UI;
+    text-align:center;
+    padding:20px;
 }
 
-// البيانات المحلية
-let points = parseInt(localStorage.getItem('arena_points')) || 0;
-let energy = parseInt(localStorage.getItem('arena_energy')) || 100;
-let isSpinning = false;
-let currentSecretNumber = Math.floor(Math.random() * 100) + 1;
+.card{
+    background:#1e293b;
+    padding:20px;
+    border-radius:20px;
+    max-width:400px;
+    margin:auto;
+}
 
-document.getElementById('current-number').innerText = currentSecretNumber;
+.avatar{
+    width:90px;
+    height:90px;
+    border-radius:50%;
+    border:3px solid #00f0ff;
+    object-fit:cover;
+}
 
-// جلب بيانات المستخدم من تيليجرام
-const playerName = document.getElementById('player-name');
-const playerPhoto = document.getElementById('user-photo');
+.name{
+    font-size:22px;
+    margin-top:10px;
+    font-weight:bold;
+}
 
-if (webapp?.initDataUnsafe?.user) {
+.level{
+    background:#ff7a00;
+    display:inline-block;
+    padding:8px 15px;
+    border-radius:15px;
+    margin-top:10px;
+}
 
-    const user = webapp.initDataUnsafe.user;
+.energy-bg{
+    height:15px;
+    background:#334155;
+    border-radius:20px;
+    overflow:hidden;
+    margin-top:10px;
+}
 
-    console.log("Telegram User:", user);
+.energy-fill{
+    width:100%;
+    height:100%;
+    background:linear-gradient(90deg,#00f0ff,#00ff87);
+}
 
-    playerName.innerText =
-        `${user.first_name || ""} ${user.last_name || ""} ⚡`;
+.wheel{
+    margin:30px auto;
+    width:250px;
+    height:250px;
+    border-radius:50%;
+    border:8px solid #334155;
+    transition:4s ease-out;
 
-    if (user.photo_url && user.photo_url.length > 0) {
+    background:conic-gradient(
+        #ff4757 0deg 60deg,
+        #ffa502 60deg 120deg,
+        #2ed573 120deg 180deg,
+        #1e90ff 180deg 240deg,
+        #a55eea 240deg 300deg,
+        #ff6348 300deg 360deg
+    );
+}
 
-        playerPhoto.src = user.photo_url;
+button{
+    background:#ff7a00;
+    border:none;
+    color:white;
+    padding:15px 30px;
+    border-radius:15px;
+    cursor:pointer;
+    font-size:18px;
+}
+</style>
 
-    } else {
+</head>
+<body>
 
-        playerPhoto.src =
-            `https://ui-avatars.com/api/?name=${encodeURIComponent(user.first_name || "Player")}&background=ff7a00&color=ffffff`;
+<div class="card">
+
+<img
+id="userPhoto"
+class="avatar"
+src="https://ui-avatars.com/api/?name=Player"
+alt="Avatar">
+
+<div id="userName" class="name">
+جاري التحميل...
+</div>
+
+<divtop:15px">
+🪙 <span id="coins">0</span>
+</div>
+
+<div style="margin-top:10px">
+⚡ <span id="energy">100</span>/100
+</div>
+
+<div class="energy-bg">
+<div class="energy-fill"></div>
+</div>
+
+</div>
+
+<div id="wheel" class="wheel"></div>
+
+<button onclick="spinWheel()">
+🎡 تدوير العجلة
+</button>
+
+<div id="result" style="margin-top:20px;font-size:22px">
+</div>
+
+<audio id="music" loop>
+music.mp3
+</audio>
+
+<script>
+
+const tg = window.Telegram?.WebApp;
+
+if(tg){
+    tg.ready();
+    tg.expand();
+}
+
+if(tg?.initDataUnsafe?.user){
+
+    const user = tg.initDataUnsafe.user;
+
+    document.getElementById("userName").innerText =
+        user.first_name;
+
+    if(user.photo_url){
+
+        document.getElementById("userPhoto").src =
+            user.photo_url;
+
+    }else{
+
+        document.getElementById("userPhoto").src =
+            `https://ui-avatars.com/api/?name=${encodeURIComponent(user.first_name)}`;
 
     }
 
-} else {
+}else{
 
-    console.log("تم فتح التطبيق خارج تيليجرام");
+    document.getElementById("userName").innerText =
+        "لاعب الحظ";
 
-    playerName.innerText = "لاعب الحظ ⚡";
-
-    playerPhoto.src =
-        "https://ui-avatars.com/api/?name=Player&background=ff7a00&color=ffffff";
 }
+
+let coins = 0;
+
+const rewards = [
+"🪙 10 عملات",
+"🪙 25 عملة",
+"🪙 50 عملة",
+"🪙 100 عملة",
+"⚡ طاقة إضافية",
+"⭐ ترقية مستوى"
+];
+
+function spinWheel(){
+
+    let index =
+        Math.floor(Math.random()*rewards.length);
+
+    let rotation =
+        3600 + (index * 60);
+
+    document.getElementById("wheel").style.transform =
+        `rotate(${rotation}deg)`;
+
+    setTimeout(()=>{
+
+        document.getElementById("result").innerText =
+            "🎉 ربحت: " + rewards[index];
+
+        if(index <= 3){
+
+            let value =
+                [10,25,50,100][index];
+
+            coins += value;
+
+            document.getElementById("coins").innerText =
+                coins;
+
+        }
+
+    },4000);
+}
+
+document.body.addEventListener("click",()=>{
+
+    const music =
+        document.getElementById("music");
+
+    music.volume = 0.3;
+
+    music.play().catch(()=>{});
+
+},{once:true});
+
+</script>
+
+</body>
+</html>
