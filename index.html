@@ -234,12 +234,11 @@
     </div>
 
     <script>
-        // تفعيل مكتبة تيليجرام
+        // تفعيل واجهة تيليجرام التفاعلية
         const webapp = window.Telegram.WebApp;
         webapp.ready();
         webapp.expand();
 
-        // قراءة البيانات المحلية المخزنة بالمتصفح بشكل مستقر وثابت
         let points = parseInt(localStorage.getItem('arena_points')) || 0;
         let energy = parseInt(localStorage.getItem('arena_energy')) || 100;
         let isSpinning = false;
@@ -250,7 +249,7 @@
         // قراءة وتطبيق بيانات المستخدم من تيليجرام
         if (webapp.initDataUnsafe && webapp.initDataUnsafe.user) {
             const user = webapp.initDataUnsafe.user;
-            document.getElementById('player-name').innerText = `${user.first_name} ⚡`;
+            document.getElementById('player-name').innerText = user.first_name + " ⚡";
             
             if (user.photo_url) {
                 document.getElementById('user-photo').src = user.photo_url;
@@ -261,5 +260,6 @@
             document.getElementById('player-name').innerText = "لاعب الحظ ⚡";
         }
 
-        // دالة تحديث الواجهة وتخزين رصيد اللاعب محلياً
         function updateUI() {
+            document.getElementById('user-points').innerText = points;
+            document.getElementById('energy-text').innerText = energy;
