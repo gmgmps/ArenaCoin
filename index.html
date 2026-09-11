@@ -3,13 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ArenaCoin - ساحة التحدي الاحترافية</title>
+    <title>ArenaCoin - ساحة التحدي</title>
+    <!-- استدعاء ملف تيليجرام الرسمي الأساسي -->
     <script src="https://telegram.org"></script>
-    
-    <!-- استدعاء مكتبات الـ Firebase المعتمدة والمتوافقة -->
-    <script src="https://gstatic.com"></script>
-    <script src="https://gstatic.com"></script>
-
     <style>
         :root {
             --bg-dark: #0f172a;
@@ -53,7 +49,6 @@
             border: 2px solid var(--neon-blue);
             box-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
             object-fit: cover;
-            background-color: #334155;
         }
         .badge {
             background: linear-gradient(90deg, var(--primary-orange), #ff9f43);
@@ -111,14 +106,9 @@
         }
         .app-section {
             display: none;
-            animation: fadeIn 0.4s ease-in-out;
         }
         .app-section.active {
             display: block;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
         }
         .wheel-box {
             position: relative;
@@ -185,7 +175,7 @@
     <div class="profile-container">
         <div class="user-meta">
             <div class="user-info-block">
-                <img src="https://dicebear.com" class="user-avatar" id="user-photo" alt="Avatar">
+                <img src="https://ui-avatars.com" class="user-avatar" id="user-photo" alt="Avatar">
                 <span id="player-name">المتسابق: زائر ⚡</span>
             </div>
             <span class="badge" id="player-rank">البرونزي (Lv.1)</span>
@@ -210,7 +200,7 @@
             <div class="pointer"></div>
             <div class="main-wheel" id="game-wheel"></div>
         </div>
-        <button class="btn-premium" id="wheel-spin-btn" onclick="executeWheelSpin()">أدر العجلة (-20 طاقة)</button>
+        <button class="btn-premium" onclick="executeWheelSpin()">أدر العجلة (-20 طاقة)</button>
     </div>
 
     <div id="tab-games" class="app-section">
@@ -227,7 +217,7 @@
     </div>
 
     <div id="tab-store" class="app-section">
-        <h3 style="margin-top:0;">🏆 centre استبدال الجوائز</h3>
+        <h3 style="margin-top:0;">🏆 مركز استبدال الجوائز</h3>
         <p style="color:#94a3b8; font-size:14px;">اجمع العملات وحوّلها لجوائز كاش حقيقية</p>
         <div class="game-card">
             <div class="game-row">
@@ -241,25 +231,35 @@
     </div>
 
     <script>
-        // عزل الأخطاء لضمان تشغيل الواجهة فوراً دون تجميد
-        try {
-            const webapp = window.Telegram.WebApp;
-            webapp.expand();
+        // بدء تهيئة كود تيليجرام
+        const webapp = window.Telegram.WebApp;
+        webapp.ready();
+        webapp.expand();
 
-            // إعداد الـ Firebase
-            const firebaseConfig = {
-                apiKey: "AIzaSyBNI0BrFz4LqPPALvtUAbNhZOC6GDc7hsE",
-                authDomain: "://firebaseapp.com",
-                projectId: "arenacoin-f0cc8",
-                storageBucket: "arenacoin-f0cc8.firebasestorage.app",
-                messagingSenderId: "415637288138",
-                appId: "1:415637288138:web:4acd633f6fedcdc8513033",
-                measurementId: "G-BT6316JW2S"
-            };
+        // إعداد متغيرات تخزين اللعبة محلياً وثباتها لتعمل 100%
+        let points = parseInt(localStorage.getItem('arena_points')) || 0;
+        let energy = parseInt(localStorage.getItem('arena_energy')) || 100;
+        let isSpinning = false;
+        let currentSecretNumber = Math.floor(Math.random() * 100) + 1;
 
-            firebase.initializeApp(firebaseConfig);
-            const db = firebase.firestore();
+        document.getElementById('current-number').innerText = currentSecretNumber;
 
-            let points = parseInt(localStorage.getItem('arena_points')) || 0;
-            let energy = parseInt(localStorage.getItem('arena_energy')) || 100;
-            let isSpinning = false;
+        // جلب وتطبيق معلومات تيليجرام بثبات بدون قواعد بيانات حالياً لمنع التجميد
+        if (webapp.initDataUnsafe && webapp.initDataUnsafe.user) {
+            const user = webapp.initDataUnsafe.user;
+            document.getElementById('player-name').innerText = `${user.first_name} ⚡`;
+            
+            if (user.photo_url) {
+                document.getElementById('user-photo').src = user.photo_url;
+            } else {
+                document.getElementById('user-photo').src = `https://ui-avatars.com{user.first_name}&background=ff7a00&color=fff`;
+            }
+        } else {
+            document.getElementById('player-name').innerText = "لاعب Arena ⚡";
+        }
+
+        updateUI();
+
+        function updateUI() {
+            document.getElementById('user-points').innerText = points;
+            document.getElementById('energy-text').innerText = energy;
