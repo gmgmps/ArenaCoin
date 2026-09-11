@@ -37,6 +37,21 @@
             align-items: center;
             margin-bottom: 15px;
         }
+        .user-info-block {
+            display: flex;
+            align-items: center;
+            gap: 12px; /* مسافة بين الصورة والاسم */
+        }
+        /* تصميم الصورة الشخصية للمستخدم */
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: 2px solid var(--neon-blue);
+            box-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
+            object-fit: cover;
+            background-color: #334155;
+        }
         .badge {
             background: linear-gradient(90deg, var(--primary-orange), #ff9f43);
             padding: 5px 12px;
@@ -175,10 +190,14 @@
 </head>
 <body>
 
-    <!-- لوحة التحكم العلوية الاحترافية -->
+    <!-- لوحة التحكم العلوية الاحترافية المحدثة بالصورة والاسم -->
     <div class="profile-container">
         <div class="user-meta">
-            <span id="player-name">المتسابق: زائر ⚡</span>
+            <div class="user-info-block">
+                <!-- صورة المستخدم الافتراضية وسيتم استبدالها بصورته الحقيقية برمجياً -->
+                <img src="https://dicebear.com" class="user-avatar" id="user-photo" alt="Avatar">
+                <span id="player-name">المتسابق: زائر ⚡</span>
+            </div>
             <span class="badge" id="player-rank">البرونزي (Lv.1)</span>
         </div>
         <div class="balance-display"><span id="user-points">0</span> 🪙</div>
@@ -247,16 +266,3 @@
         let isSpinning = false;
         let currentSecretNumber = Math.floor(Math.random() * 100) + 1;
 
-        // تحديث البيانات على الواجهة عند التشغيل
-        document.getElementById('user-points').innerText = points;
-        document.getElementById('energy-text').innerText = energy;
-        document.getElementById('energy-fill').style.width = energy + '%';
-        document.getElementById('current-number').innerText = currentSecretNumber;
-
-        if (webapp.initDataUnsafe && webapp.initDataUnsafe.user) {
-            document.getElementById('player-name').innerText = `المتسابق: ${webapp.initDataUnsafe.user.first_name} ⚡`;
-        }
-
-        // تحديث الرتبة بناء على النقاط
-        function updatePlayerRank() {
-            const rankLabel = document.getElementById('player-rank');
