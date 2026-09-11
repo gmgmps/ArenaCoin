@@ -3,93 +3,151 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>ArenaCoin</title>
 
 <ttps://telegram.org/js/telegram-web-app.jsscript>
 
 <style>
+
+:root{
+--bg:#0f172a;
+--card:#1e293b;
+--orange:#ff7a00;
+--blue:#00f0ff;
+--text:#ffffff;
+}
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
 body{
-    background:#0f172a;
-    color:white;
-    font-family:Segoe UI;
-    text-align:center;
-    padding:20px;
+background:var(--bg);
+font-family:Tahoma,sans-serif;
+color:var(--text);
+padding:15px;
+text-align:center;
 }
 
 .card{
-    background:#1e293b;
-    padding:20px;
-    border-radius:20px;
-    max-width:400px;
-    margin:auto;
+background:var(--card);
+padding:20px;
+border-radius:20px;
+margin-bottom:20px;
+box-shadow:0 0 20px rgba(0,0,0,.3);
 }
 
 .avatar{
-    width:90px;
-    height:90px;
-    border-radius:50%;
-    border:3px solid #00f0ff;
-    object-fit:cover;
+width:90px;
+height:90px;
+border-radius:50%;
+border:3px solid var(--blue);
+object-fit:cover;
 }
 
 .name{
-    font-size:22px;
-    margin-top:10px;
-    font-weight:bold;
+font-size:22px;
+font-weight:bold;
+margin-top:10px;
 }
 
 .level{
-    background:#ff7a00;
-    display:inline-block;
-    padding:8px 15px;
-    border-radius:15px;
-    margin-top:10px;
+margin-top:10px;
+display:inline-block;
+padding:8px 16px;
+background:var(--orange);
+border-radius:20px;
+}
+
+.balance{
+font-size:32px;
+color:var(--blue);
+margin-top:15px;
+font-weight:bold;
+}
+
+.energy-box{
+margin-top:15px;
 }
 
 .energy-bg{
-    height:15px;
-    background:#334155;
-    border-radius:20px;
-    overflow:hidden;
-    margin-top:10px;
+height:14px;
+background:#334155;
+border-radius:20px;
+overflow:hidden;
+margin-top:8px;
 }
 
 .energy-fill{
-    width:100%;
-    height:100%;
-    background:linear-gradient(90deg,#00f0ff,#00ff87);
+height:100%;
+width:100%;
+background:linear-gradient(90deg,#00f0ff,#00ff87);
+}
+
+.wheel-container{
+position:relative;
+width:280px;
+height:280px;
+margin:25px auto;
+}
+
+.pointer{
+position:absolute;
+top:-12px;
+left:50%;
+transform:translateX(-50%);
+width:0;
+height:0;
+border-left:15px solid transparent;
+border-right:15px solid transparent;
+border-top:30px solid white;
+z-index:10;
 }
 
 .wheel{
-    margin:30px auto;
-    width:250px;
-    height:250px;
-    border-radius:50%;
-    border:8px solid #334155;
-    transition:4s ease-out;
+width:100%;
+height:100%;
+border-radius:50%;
+border:8px solid #334155;
+transition:transform 4s ease-out;
 
-    background:conic-gradient(
-        #ff4757 0deg 60deg,
-        #ffa502 60deg 120deg,
-        #2ed573 120deg 180deg,
-        #1e90ff 180deg 240deg,
-        #a55eea 240deg 300deg,
-        #ff6348 300deg 360deg
-    );
+background:
+conic-gradient(
+#ff4757 0deg 45deg,
+#ffa502 45deg 90deg,
+#2ed573 90deg 135deg,
+#1e90ff 135deg 180deg,
+#a55eea 180deg 225deg,
+#ff6348 225deg 270deg,
+#00d2d3 270deg 315deg,
+#eccc68 315deg 360deg
+);
 }
 
-button{
-    background:#ff7a00;
-    border:none;
-    color:white;
-    padding:15px 30px;
-    border-radius:15px;
-    cursor:pointer;
-    font-size:18px;
+.btn{
+background:linear-gradient(135deg,var(--orange),#d35400);
+border:none;
+padding:15px 35px;
+border-radius:15px;
+font-size:18px;
+font-weight:bold;
+color:white;
+cursor:pointer;
 }
+
+.reward{
+margin-top:20px;
+font-size:22px;
+font-weight:bold;
+color:#00ff87;
+}
+
 </style>
-
 </head>
+
 <body>
 
 <div class="card">
@@ -97,37 +155,57 @@ button{
 <img
 id="userPhoto"
 class="avatar"
-src="https://ui-avatars.com/api/?name=Player"
-alt="Avatar">
+src="https://ui-avatars.com/api/?name=Player">
 
 <div id="userName" class="name">
-جاري التحميل...
+ج
+⭐ المستوى <span id="level">1</span>
 </div>
 
-<divtop:15px">
+<div class="balance">
 🪙 <span id="coins">0</span>
 </div>
 
-<div style="margin-top:10px">
-⚡ <span id="energy">100</span>/100
+<div class="energy-box">
+
+<div>
+⚡ الطاقة:
+<span id="energyText">100</span>/100
 </div>
 
 <div class="energy-bg">
-<div class="energy-fill"></div>
+<div
+id="energyFill"
+class="energy-fill">
+</div>
 </div>
 
 </div>
 
-<div id="wheel" class="wheel"></div>
+</div>
 
-<button onclick="spinWheel()">
-🎡 تدوير العجلة
+<div class="wheel-container">
+
+<div class="pointer"></div>
+
+<div
+id="wheel"
+class="wheel">
+</div>
+
+</div>
+
+<button
+class="btn"
+onclick="spinWheel()">
+🎡 أدر العجلة
 </button>
 
-<div id="result" style="margin-top:20px;font-size:22px">
-</div>
+<div id="rewardBox" class="reward"></div>
 
-<audio id="music" loop>
+<audio
+id="bgMusic"
+loop>
 music.mp3
 </audio>
 
@@ -136,86 +214,179 @@ music.mp3
 const tg = window.Telegram?.WebApp;
 
 if(tg){
-    tg.ready();
-    tg.expand();
+tg.ready();
+tg.expand();
 }
+
+let coins =
+parseInt(localStorage.getItem("coins")) || 0;
+
+let energy =
+parseInt(localStorage.getItem("energy")) || 100;
+
+let level =
+parseInt(localStorage.getItem("level")) || 1;
+
+const rewards = [
+
+{
+name:"10 عملات",
+type:"coins",
+value:10
+},
+
+{
+name:"25 عملة",
+type:"coins",
+value:25
+},
+
+{
+name:"50 عملة",
+type:"coins",
+value:50
+},
+
+{
+name:"100 عملة",
+type:"coins",
+value:100
+},
+
+{
+name:"20 طاقة",
+type:"energy",
+value:20
+},
+
+{
+name:"30 طاقة",
+type:"energy",
+value:30
+},
+
+{
+name:"ترقية مستوى",
+type:"level",
+value:1
+},
+
+{
+name:"200 عملة",
+type:"coins",
+value:200
+}
+
+];
+
+function updateUI(){
+
+document.getElementById("coins").innerText =
+coins;
+
+document.getElementById("level").innerText =
+level;
+
+document.getElementById("energyText").innerText =
+energy;
+
+document.getElementById("energyFill").style.width =
+energy + "%";
+
+localStorage.setItem("coins",coins);
+localStorage.setItem("energy",energy);
+localStorage.setItem("level",level);
+
+}
+
+updateUI();
 
 if(tg?.initDataUnsafe?.user){
 
-    const user = tg.initDataUnsafe.user;
+const user =
+tg.initDataUnsafe.user;
 
-    document.getElementById("userName").innerText =
-        user.first_name;
+document.getElementById("userName").innerText =
+user.first_name;
 
-    if(user.photo_url){
+if(user.photo_url){
 
-        document.getElementById("userPhoto").src =
-            user.photo_url;
-
-    }else{
-
-        document.getElementById("userPhoto").src =
-            `https://ui-avatars.com/api/?name=${encodeURIComponent(user.first_name)}`;
-
-    }
-
-}else{
-
-    document.getElementById("userName").innerText =
-        "لاعب الحظ";
+document.getElementById("userPhoto").src =
+user.photo_url;
 
 }
 
-let coins = 0;
+}else{
 
-const rewards = [
-"🪙 10 عملات",
-"🪙 25 عملة",
-"🪙 50 عملة",
-"🪙 100 عملة",
-"⚡ طاقة إضافية",
-"⭐ ترقية مستوى"
-];
+document.getElementById("userName").innerText =
+"لاعب الحظ";
+
+}
 
 function spinWheel(){
 
-    let index =
-        Math.floor(Math.random()*rewards.length);
+if(energy < 20){
 
-    let rotation =
-        3600 + (index * 60);
+alert("⚡ لا توجد طاقة كافية");
 
-    document.getElementById("wheel").style.transform =
-        `rotate(${rotation}deg)`;
+return;
 
-    setTimeout(()=>{
+}
 
-        document.getElementById("result").innerText =
-            "🎉 ربحت: " + rewards[index];
+energy -= 20;
 
-        if(index <= 3){
+const index =
+Math.floor(
+Math.random()*rewards.length
+);
 
-            let value =
-                [10,25,50,100][index];
+const reward =
+rewards[index];
 
-            coins += value;
+const wheel =
+document.getElementById("wheel");
 
-            document.getElementById("coins").innerText =
-                coins;
+const rotation =
+3600 + (index * 45);
 
-        }
+wheel.style.transform =
+`rotate(${rotation}deg)`;
 
-    },4000);
+setTimeout(()=>{
+
+if(reward.type==="coins"){
+coins += reward.value;
+}
+
+if(reward.type==="energy"){
+energy += reward.value;
+
+if(energy > 100){
+energy = 100;
+}
+}
+
+if(reward.type==="level"){
+level += reward.value;
+}
+
+document.getElementById("rewardBox").innerText =
+"🎉 ربحت: " + reward.name;
+
+updateUI();
+
+},4000);
+
 }
 
 document.body.addEventListener("click",()=>{
 
-    const music =
-        document.getElementById("music");
+const music =
+document.getElementById("bgMusic");
 
-    music.volume = 0.3;
+music.volume = 0.2;
 
-    music.play().catch(()=>{});
+music.play().catch(()=>{});
 
 },{once:true});
 
