@@ -1,227 +1,262 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ArenaCoin - مجتمع التحديات</title>
-    <!-- ربط التطبيق بنظام تيليجرام الرسمي -->
+    <title>ArenaCoin - ساحة التحدي الاحترافية</title>
     <script src="https://telegram.org"></script>
     <style>
-        /* تصميم الألوان والشاشة */
+        :root {
+            --bg-dark: #0f172a;
+            --card-dark: #1e293b;
+            --primary-orange: #ff7a00;
+            --neon-blue: #00f0ff;
+            --text-main: #f8fafc;
+        }
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #1a1a1a;
-            color: #ffffff;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
             margin: 0;
             padding: 15px;
             text-align: center;
+            user-select: none;
         }
-
-        .header {
-            background: linear-gradient(135deg, #f39c12, #d35400);
-            color: white;
+        /* الهيدر الاحترافي المتطور */
+        .profile-container {
+            background: linear-gradient(145deg, var(--card-dark), #111827);
             padding: 20px;
-            border-radius: 15px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-        }
-
-        .balance-box {
-            font-size: 26px;
-            font-weight: bold;
-            background: rgba(0, 0, 0, 0.3);
-            padding: 8px 20px;
             border-radius: 20px;
-            display: inline-block;
-            margin-top: 10px;
-        }
-
-        .nav-tabs {
-            display: flex;
-            justify-content: space-around;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            border: 1px solid rgba(255, 255, 255, 0.05);
             margin-bottom: 20px;
-            background: #2c3e50;
-            padding: 5px;
-            border-radius: 12px;
         }
-
-        .tab-btn {
+        .user-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .badge {
+            background: linear-gradient(90deg, var(--primary-orange), #ff9f43);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            box-shadow: 0 0 10px rgba(255, 122, 0, 0.5);
+        }
+        .balance-display {
+            font-size: 32px;
+            font-weight: 900;
+            color: var(--neon-blue);
+            text-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
+            margin: 10px 0;
+        }
+        /* شريط مستوى الطاقة */
+        .energy-bar-container {
+            background: #334155;
+            border-radius: 10px;
+            height: 12px;
+            width: 100%;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+        .energy-bar {
+            background: linear-gradient(90deg, #00f0ff, #00ff87);
+            width: 100%;
+            height: 100%;
+            transition: width 0.5s ease;
+        }
+        /* أزرار التنقل الاحترافية */
+        .nav-bar {
+            display: flex;
+            background: var(--card-dark);
+            padding: 6px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .nav-item {
+            flex: 1;
             background: none;
             border: none;
+            color: #94a3b8;
             padding: 12px;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+        .nav-item.active {
+            background: var(--primary-orange);
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 122, 0, 0.3);
+        }
+        /* الأقسام */
+        .app-section {
+            display: none;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+        .app-section.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        /* تصميم عجلة الحظ */
+        .wheel-box {
+            position: relative;
+            width: 260px;
+            height: 260px;
+            margin: 20px auto;
+        }
+        .main-wheel {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 6px solid #334155;
+            background: conic-gradient(#e74c3c 0% 16.6%, #9b59b6 16.6% 33.2%, #3498db 33.2% 49.8%, #2ecc71 49.8% 66.4%, #f1c40f 66.4% 83%, #1abc9c 83% 100%);
+            box-shadow: 0 0 25px rgba(0,0,0,0.5);
+            transition: transform 4s cubic-bezier(0.1, 0.8, 0.1, 1);
+        }
+        .pointer {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0; height: 0;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-top: 25px solid white;
+            z-index: 10;
+        }
+        /* أزرار الأكشن الاحترافية */
+        .btn-premium {
+            background: linear-gradient(135deg, var(--primary-orange), #d35400);
+            color: white;
+            border: none;
+            padding: 14px 40px;
             font-size: 16px;
             font-weight: bold;
-            color: #bdc3c7;
+            border-radius: 14px;
             cursor: pointer;
-            width: 33%;
-            border-radius: 8px;
+            box-shadow: 0 6px 20px rgba(255, 122, 0, 0.4);
+            transition: 0.2s;
         }
-
-            .tab-btn.active {
-                background: #f39c12;
-                color: #fff;
-            }
-
-        .section {
-            background: #2c3e50;
+        .btn-premium:disabled {
+            background: #475569;
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+        /* كروت الألعاب المصغرة والتحديات */
+        .game-card {
+            background: var(--card-dark);
             padding: 20px;
-            border-radius: 15px;
-            display: none;
+            border-radius: 18px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            text-align: right;
         }
-
-            .section.active {
-                display: block;
-            }
-
-        .task-card {
-            background: #34495e;
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 12px;
+        .game-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-
-        .btn-action {
-            background-color: #f39c12;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
+        .number-box {
+            font-size: 48px;
             font-weight: bold;
-            cursor: pointer;
-        }
-        /* تصميم عجلة الحظ ميكانيكياً */
-        .wheel-container {
-            position: relative;
-            width: 250px;
-            height: 250px;
-            margin: 30px auto;
-        }
-
-        .wheel {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            border: 5px solid #fff;
-            background: conic-gradient( #e74c3c 0deg 60deg, #9b59b6 60deg 120deg, #3498db 120deg 180deg, #2ecc71 180deg 240deg, #f1c40f 240deg 300deg, #1abc9c 300deg 360deg );
-            transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99);
-        }
-
-        .wheel-pointer {
-            position: absolute;
-            top: -15px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 0;
-            height: 0;
-            border-left: 15px solid transparent;
-            border-right: 15px solid transparent;
-            border-top: 30px solid #ffffff;
-            z-index: 10;
+            color: var(--neon-blue);
+            margin: 15px 0;
+            text-align: center;
         }
     </style>
 </head>
 <body>
 
-    <!-- الهيدر: يعرض اسم المستخدم ورصيده -->
-    <div class="header">
-        <div id="user-name" style="font-size: 18px;">مرحباً بك في ArenaCoin 🏆</div>
-        <div class="balance-box"><span id="balance">0</span> 🪙</div>
-    </div>
-
-    <!-- أزرار التنقل السفلية للتحكم بالصفحات -->
-    <div class="nav-tabs">
-        <button class="tab-btn active" onclick="switchTab('spin')">🎡 عجلة الحظ</button>
-        <button class="tab-btn" onclick="switchTab('tasks')">📋 التحديات</button>
-        <button class="tab-btn" onclick="switchTab('shop')">🎁 الجوائز</button>
-    </div>
-
-    <!-- قسم عجلة الحظ -->
-    <div id="spin-sec" class="section active">
-        <h3>🎡 العجلة اليومية</h3>
-        <p>أدر العجلة واحصل على نقاط مجانية</p>
-        <div class="wheel-container">
-            <div class="wheel-pointer"></div>
-            <div class="wheel" id="wheel"></div>
+    <!-- لوحة التحكم العلوية الاحترافية -->
+    <div class="profile-container">
+        <div class="user-meta">
+            <span id="player-name">المتسابق: زائر ⚡</span>
+            <span class="badge" id="player-rank">البرونزي (Lv.1)</span>
         </div>
-        <button class="btn-action" id="spin-btn" onclick="spinWheel()" style="font-size: 18px; padding: 12px 40px;">تدوير العجلة (مجاناً)</button>
+        <div class="balance-display"><span id="user-points">0</span> 🪙</div>
+        <div style="text-align: right; font-size: 12px; color: #94a3b8;">الطاقة المتاحة: <span id="energy-text">100</span>/100</div>
+        <div class="energy-bar-container">
+            <div class="energy-bar" id="energy-fill"></div>
+        </div>
     </div>
 
-    <!-- قسم التحديات والمهام الإعلانية -->
-    <div id="tasks-sec" class="section">
-        <h3>📋 التحديات المتاحة اليوم</h3>
-        <div class="task-card">
-            <div>
-                <strong>📺 تحدي الفيديو المربح</strong><br>
-                <small style="color: #bdc3c7;">شاهد الفيديو واشحن طاقة (+50 نقطة)</small>
+    <!-- شريط التنقل المتطور -->
+    <div class="nav-bar">
+        <button class="nav-item active" onclick="changeTab('tab-spin')">🎡 العجلة</button>
+        <button class="nav-item" onclick="changeTab('tab-games')">🎮 ألعاب Arena</button>
+        <button class="nav-item" onclick="changeTab('tab-store')">🏆 متجر الجوائز</button>
+    </div>
+
+    <!-- قسم 1: عجلة الحظ -->
+    <div id="tab-spin" class="app-section active">
+        <h3 style="margin-top:0;">🎡 عجلة الحظ الكبرى</h3>
+        <p style="color:#94a3b8; font-size:14px;">استهلك 20 طاقة لتدوير العجلة واربح مكافآت مضاعفة</p>
+        <div class="wheel-box">
+            <div class="pointer"></div>
+            <div class="main-wheel" id="game-wheel"></div>
+        </div>
+        <button class="btn-premium" id="wheel-spin-btn" onclick="executeWheelSpin()">أدر العجلة (-20 طاقة)</button>
+    </div>
+
+    <!-- قسم 2: الألعاب المصغرة التفاعلية -->
+    <div id="tab-games" class="app-section">
+        <h3 style="margin-top:0;">🎮 صالة الألعاب المصغرة</h3>
+        
+        <!-- لعبة التخمين الرقمي التفاعلية -->
+        <div class="game-card">
+            <strong style="font-size:18px; color:var(--neon-blue);">🎲 لعبة تخمين الرقم (أعلى أم أقل؟)</strong>
+            <p style="color:#94a3b8; font-size:13px; margin: 5px 0;">الرقم الحالي معروض بالأسفل، هل تعتقد أن الرقم العشوائي القادم سيكون أعلى أم أقل؟ التخمين الصحيح يمنحك +40 عملة!</p>
+            <div class="number-box" id="current-number">50</div>
+            <div style="display: flex; gap: 10px;">
+                <button class="btn-premium" onclick="playGuessGame('higher')" style="flex:1; background:#2ecc71; box-shadow:0 4px 12px rgba(46,204,113,0.3);">أعلى ⬆️</button>
+                <button class="btn-premium" onclick="playGuessGame('lower')" style="flex:1; background:#e74c3c; box-shadow:0 4px 12px rgba(231,76,60,0.3);">أقل ⬇️</button>
             </div>
-            <button class="btn-action" onclick="watchAdPlaceholder()">شحن</button>
         </div>
     </div>
 
-    <!-- قسم سحب الأرباح والجوائز -->
-    <div id="shop-sec" class="section">
-        <h3>🎁 صندوق المكافآت الحقيقية</h3>
-        <p>استبدل نقاطك عندما تصل للحد الأدنى</p>
-        <div class="task-card">
-            <div><strong>💵 سحب رصيد بقيمة 5 دولار كاش</strong></div>
-            <button class="btn-action" style="background-color: #7f8c8d;">5000 🪙</button>
+    <!-- قسم 3: متجر الجوائز الاحترافي -->
+    <div id="tab-store" class="app-section">
+        <h3 style="margin-top:0;">🏆 مركز استبدال الجوائز</h3>
+        <p style="color:#94a3b8; font-size:14px;">اجمع العملات وحوّلها لجوائز كاش حقيقية</p>
+        <div class="game-card">
+            <div class="game-row">
+                <div>
+                    <strong>💰 رصيد 5$ كاش (PayPal / شحن رصيد)</strong><br>
+                    <small style="color:var(--primary-orange);">الحد الأدنى للسحب</small>
+                </div>
+                <button class="btn-premium" style="background:#475569; box-shadow:none; padding:10px 15px;">5,000 عملة</button>
+            </div>
         </div>
     </div>
 
-    <script>// تفعيل تطبيق تيليجرام المصغر
-        const tg = window.Telegram.WebApp;
-        tg.expand(); // تمديد الشاشة بالكامل
+    <script>
+        const webapp = window.Telegram.WebApp;
+        webapp.expand();
 
-        let currentBalance = 0;
-        let canSpin = true;
+        // متغيرات اللعبة وحفظ البيانات مؤقتاً في المتصفح
+        let points = parseInt(localStorage.getItem('arena_points')) || 0;
+        let energy = parseInt(localStorage.getItem('arena_energy')) || 100;
+        let isSpinning = false;
+        let currentSecretNumber = Math.floor(Math.random() * 100) + 1;
 
-        // جلب اسم المستخدم الحقيقي من حساب تيليجرام الخاص به
-        if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-            document.getElementById('user-name').innerText = `المتسابق: ${tg.initDataUnsafe.user.first_name} 🌟`;
+        // تحديث البيانات على الواجهة عند التشغيل
+        document.getElementById('user-points').innerText = points;
+        document.getElementById('energy-text').innerText = energy;
+        document.getElementById('energy-fill').style.width = energy + '%';
+        document.getElementById('current-number').innerText = currentSecretNumber;
+
+        if (webapp.initDataUnsafe && webapp.initDataUnsafe.user) {
+            document.getElementById('player-name').innerText = `المتسابق: ${webapp.initDataUnsafe.user.first_name} ⚡`;
         }
 
-        // دالة التنقل بين الأقسام الثلاثة
-        function switchTab(tabName) {
-            document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-
-            document.getElementById(`${tabName}-sec`).classList.add('active');
-            event.target.classList.add('active');
-        }
-
-        // تشغيل حركة عجلة الحظ
-        function spinWheel() {
-            if (!canSpin) return;
-            canSpin = false;
-
-            const wheel = document.getElementById('wheel');
-            const randomDegrees = Math.floor(Math.random() * 360) + 1800; // 5 دورات كاملة على الأقل للتأثير البصري
-
-            wheel.style.transform = `rotate(${randomDegrees}deg)`;
-
-            setTimeout(() => {
-                currentBalance += 100; // إضافة 100 نقطة بعد انتهاء الدوران
-                document.getElementById('balance').innerText = currentBalance;
-
-                // الاستراتيجية الذكية: تغيير نص الزر ليطلب منه إعلان في المرة القادمة
-                const spinBtn = document.getElementById('spin-btn');
-                spinBtn.innerText = "شاهد إعلان لدورة إضافية 🚀";
-                spinBtn.style.background = "#e67e22";
-
-                tg.showAlert("رائع! لقد ربحت 100 عملة في رصيدك 🪙");
-                canSpin = true;
-            }, 4000); // مدة الدوران 4 ثوانٍ
-        }
-
-        function watchAdPlaceholder() {
-            tg.showPopup({
-                title: 'تحدي الفيديو',
-                message: 'سيتم تحميل الإعلان المربح الآن، يرجى مشاهدته للنهاية.',
-                buttons: [{type: 'ok', text: 'حسناً'}]
-            });
-        }</script>
-</body>
-</html>
+        // تحديث الرتبة بناء على النقاط
+        function updatePlayerRank() {
+            const rankLabel = document.getElementById('player-rank');
