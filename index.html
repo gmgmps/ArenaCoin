@@ -1,0 +1,227 @@
+﻿<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ArenaCoin - مجتمع التحديات</title>
+    <!-- ربط التطبيق بنظام تيليجرام الرسمي -->
+    <script src="https://telegram.org"></script>
+    <style>
+        /* تصميم الألوان والشاشة */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1a1a1a;
+            color: #ffffff;
+            margin: 0;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #f39c12, #d35400);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        .balance-box {
+            font-size: 26px;
+            font-weight: bold;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 8px 20px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        .nav-tabs {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+            background: #2c3e50;
+            padding: 5px;
+            border-radius: 12px;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #bdc3c7;
+            cursor: pointer;
+            width: 33%;
+            border-radius: 8px;
+        }
+
+            .tab-btn.active {
+                background: #f39c12;
+                color: #fff;
+            }
+
+        .section {
+            background: #2c3e50;
+            padding: 20px;
+            border-radius: 15px;
+            display: none;
+        }
+
+            .section.active {
+                display: block;
+            }
+
+        .task-card {
+            background: #34495e;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-action {
+            background-color: #f39c12;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        /* تصميم عجلة الحظ ميكانيكياً */
+        .wheel-container {
+            position: relative;
+            width: 250px;
+            height: 250px;
+            margin: 30px auto;
+        }
+
+        .wheel {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 5px solid #fff;
+            background: conic-gradient( #e74c3c 0deg 60deg, #9b59b6 60deg 120deg, #3498db 120deg 180deg, #2ecc71 180deg 240deg, #f1c40f 240deg 300deg, #1abc9c 300deg 360deg );
+            transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+        }
+
+        .wheel-pointer {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-top: 30px solid #ffffff;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- الهيدر: يعرض اسم المستخدم ورصيده -->
+    <div class="header">
+        <div id="user-name" style="font-size: 18px;">مرحباً بك في ArenaCoin 🏆</div>
+        <div class="balance-box"><span id="balance">0</span> 🪙</div>
+    </div>
+
+    <!-- أزرار التنقل السفلية للتحكم بالصفحات -->
+    <div class="nav-tabs">
+        <button class="tab-btn active" onclick="switchTab('spin')">🎡 عجلة الحظ</button>
+        <button class="tab-btn" onclick="switchTab('tasks')">📋 التحديات</button>
+        <button class="tab-btn" onclick="switchTab('shop')">🎁 الجوائز</button>
+    </div>
+
+    <!-- قسم عجلة الحظ -->
+    <div id="spin-sec" class="section active">
+        <h3>🎡 العجلة اليومية</h3>
+        <p>أدر العجلة واحصل على نقاط مجانية</p>
+        <div class="wheel-container">
+            <div class="wheel-pointer"></div>
+            <div class="wheel" id="wheel"></div>
+        </div>
+        <button class="btn-action" id="spin-btn" onclick="spinWheel()" style="font-size: 18px; padding: 12px 40px;">تدوير العجلة (مجاناً)</button>
+    </div>
+
+    <!-- قسم التحديات والمهام الإعلانية -->
+    <div id="tasks-sec" class="section">
+        <h3>📋 التحديات المتاحة اليوم</h3>
+        <div class="task-card">
+            <div>
+                <strong>📺 تحدي الفيديو المربح</strong><br>
+                <small style="color: #bdc3c7;">شاهد الفيديو واشحن طاقة (+50 نقطة)</small>
+            </div>
+            <button class="btn-action" onclick="watchAdPlaceholder()">شحن</button>
+        </div>
+    </div>
+
+    <!-- قسم سحب الأرباح والجوائز -->
+    <div id="shop-sec" class="section">
+        <h3>🎁 صندوق المكافآت الحقيقية</h3>
+        <p>استبدل نقاطك عندما تصل للحد الأدنى</p>
+        <div class="task-card">
+            <div><strong>💵 سحب رصيد بقيمة 5 دولار كاش</strong></div>
+            <button class="btn-action" style="background-color: #7f8c8d;">5000 🪙</button>
+        </div>
+    </div>
+
+    <script>// تفعيل تطبيق تيليجرام المصغر
+        const tg = window.Telegram.WebApp;
+        tg.expand(); // تمديد الشاشة بالكامل
+
+        let currentBalance = 0;
+        let canSpin = true;
+
+        // جلب اسم المستخدم الحقيقي من حساب تيليجرام الخاص به
+        if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+            document.getElementById('user-name').innerText = `المتسابق: ${tg.initDataUnsafe.user.first_name} 🌟`;
+        }
+
+        // دالة التنقل بين الأقسام الثلاثة
+        function switchTab(tabName) {
+            document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+
+            document.getElementById(`${tabName}-sec`).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // تشغيل حركة عجلة الحظ
+        function spinWheel() {
+            if (!canSpin) return;
+            canSpin = false;
+
+            const wheel = document.getElementById('wheel');
+            const randomDegrees = Math.floor(Math.random() * 360) + 1800; // 5 دورات كاملة على الأقل للتأثير البصري
+
+            wheel.style.transform = `rotate(${randomDegrees}deg)`;
+
+            setTimeout(() => {
+                currentBalance += 100; // إضافة 100 نقطة بعد انتهاء الدوران
+                document.getElementById('balance').innerText = currentBalance;
+
+                // الاستراتيجية الذكية: تغيير نص الزر ليطلب منه إعلان في المرة القادمة
+                const spinBtn = document.getElementById('spin-btn');
+                spinBtn.innerText = "شاهد إعلان لدورة إضافية 🚀";
+                spinBtn.style.background = "#e67e22";
+
+                tg.showAlert("رائع! لقد ربحت 100 عملة في رصيدك 🪙");
+                canSpin = true;
+            }, 4000); // مدة الدوران 4 ثوانٍ
+        }
+
+        function watchAdPlaceholder() {
+            tg.showPopup({
+                title: 'تحدي الفيديو',
+                message: 'سيتم تحميل الإعلان المربح الآن، يرجى مشاهدته للنهاية.',
+                buttons: [{type: 'ok', text: 'حسناً'}]
+            });
+        }</script>
+</body>
+</html>
