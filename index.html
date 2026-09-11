@@ -6,7 +6,7 @@
     <title>ArenaCoin - ساحة التحدي الاحترافية</title>
     <script src="https://telegram.org"></script>
     
-    <!-- استدعاء مكتبات الـ Firebase المتوافقة مع المتصفحات وتيليجرام -->
+    <!-- استدعاء مكتبات الـ Firebase المعتمدة والمتوافقة -->
     <script src="https://gstatic.com"></script>
     <script src="https://gstatic.com"></script>
 
@@ -186,7 +186,7 @@
         <div class="user-meta">
             <div class="user-info-block">
                 <img src="https://dicebear.com" class="user-avatar" id="user-photo" alt="Avatar">
-                <span id="player-name">المتسابق: جاري التحميل... 🔄</span>
+                <span id="player-name">المتسابق: زائر ⚡</span>
             </div>
             <span class="badge" id="player-rank">البرونزي (Lv.1)</span>
         </div>
@@ -198,9 +198,9 @@
     </div>
 
     <div class="nav-bar">
-        <button class="nav-item active" onclick="changeTab('tab-spin')">🎡 العجلة</button>
-        <button class="nav-item" onclick="changeTab('tab-games')">🎮 ألعاب Arena</button>
-        <button class="nav-item" onclick="changeTab('tab-store')">🏆 متجر الجوائز</button>
+        <button class="nav-item active" onclick="changeTab('tab-spin', event)">🎡 العجلة</button>
+        <button class="nav-item" onclick="changeTab('tab-games', event)">🎮 ألعاب Arena</button>
+        <button class="nav-item" onclick="changeTab('tab-store', event)">🏆 متجر الجوائز</button>
     </div>
 
     <div id="tab-spin" class="app-section active">
@@ -227,7 +227,7 @@
     </div>
 
     <div id="tab-store" class="app-section">
-        <h3 style="margin-top:0;">🏆 مركز استبدال الجوائز</h3>
+        <h3 style="margin-top:0;">🏆 centre استبدال الجوائز</h3>
         <p style="color:#94a3b8; font-size:14px;">اجمع العملات وحوّلها لجوائز كاش حقيقية</p>
         <div class="game-card">
             <div class="game-row">
@@ -241,28 +241,25 @@
     </div>
 
     <script>
-        const webapp = window.Telegram.WebApp;
-        webapp.expand();
+        // عزل الأخطاء لضمان تشغيل الواجهة فوراً دون تجميد
+        try {
+            const webapp = window.Telegram.WebApp;
+            webapp.expand();
 
-        // إعداد وربط Firebase بمفاتيح مشروعك الحقيقي
-        const firebaseConfig = {
-            apiKey: "AIzaSyBNI0BrFz4LqPPALvtUAbNhZOC6GDc7hsE",
-            authDomain: "arenacoin-f0cc8.firebaseapp.com",
-            projectId: "arenacoin-f0cc8",
-            storageBucket: "arenacoin-f0cc8.firebasestorage.app",
-            messagingSenderId: "415637288138",
-            appId: "1:415637288138:web:4acd633f6fedcdc8513033",
-            measurementId: "G-BT6316JW2S"
-        };
+            // إعداد الـ Firebase
+            const firebaseConfig = {
+                apiKey: "AIzaSyBNI0BrFz4LqPPALvtUAbNhZOC6GDc7hsE",
+                authDomain: "://firebaseapp.com",
+                projectId: "arenacoin-f0cc8",
+                storageBucket: "arenacoin-f0cc8.firebasestorage.app",
+                messagingSenderId: "415637288138",
+                appId: "1:415637288138:web:4acd633f6fedcdc8513033",
+                measurementId: "G-BT6316JW2S"
+            };
 
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
+            firebase.initializeApp(firebaseConfig);
+            const db = firebase.firestore();
 
-        // متغيرات اللعبة الافتراضية
-        let points = 0;
-        let energy = 100;
-        let isSpinning = false;
-        let currentSecretNumber = Math.floor(Math.random() * 100) + 1;
-        let userId = "guest_player"; // في حال تم فتح التطبيق خارج تيليجرام للتجربة
-        let userName = "زائر";
-
+            let points = parseInt(localStorage.getItem('arena_points')) || 0;
+            let energy = parseInt(localStorage.getItem('arena_energy')) || 100;
+            let isSpinning = false;
