@@ -40,7 +40,7 @@
         .user-info-block {
             display: flex;
             align-items: center;
-            gap: 12px; /* مسافة بين الصورة والاسم */
+            gap: 12px;
         }
         /* تصميم الصورة الشخصية للمستخدم */
         .user-avatar {
@@ -194,7 +194,6 @@
     <div class="profile-container">
         <div class="user-meta">
             <div class="user-info-block">
-                <!-- صورة المستخدم الافتراضية وسيتم استبدالها بصورته الحقيقية برمجياً -->
                 <img src="https://dicebear.com" class="user-avatar" id="user-photo" alt="Avatar">
                 <span id="player-name">المتسابق: زائر ⚡</span>
             </div>
@@ -260,9 +259,10 @@
         const webapp = window.Telegram.WebApp;
         webapp.expand();
 
-        // متغيرات اللعبة وحفظ البيانات مؤقتاً في المتصفح
         let points = parseInt(localStorage.getItem('arena_points')) || 0;
         let energy = parseInt(localStorage.getItem('arena_energy')) || 100;
         let isSpinning = false;
         let currentSecretNumber = Math.floor(Math.random() * 100) + 1;
 
+        document.getElementById('user-points').innerText = points;
+        document.getElementById('energy-text').innerText = energy;
