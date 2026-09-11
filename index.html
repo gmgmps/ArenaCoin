@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ArenaCoin - ساحة التحدي</title>
-    <!-- استدعاء ملف تيليجرام الرسمي الأساسي -->
+    <!-- استدعاء ملف مكتبة تيليجرام الأساسية -->
     <script src="https://telegram.org"></script>
     <style>
         :root {
@@ -193,6 +193,7 @@
         <button class="nav-item" onclick="changeTab('tab-store', event)">🏆 متجر الجوائز</button>
     </div>
 
+    <!-- قسم العجلة -->
     <div id="tab-spin" class="app-section active">
         <h3 style="margin-top:0;">🎡 عجلة الحظ الكبرى</h3>
         <p style="color:#94a3b8; font-size:14px;">استهلك 20 طاقة لتدوير العجلة واربح مكافآت مضاعفة</p>
@@ -203,6 +204,7 @@
         <button class="btn-premium" onclick="executeWheelSpin()">أدر العجلة (-20 طاقة)</button>
     </div>
 
+    <!-- قسم الألعاب المصغرة -->
     <div id="tab-games" class="app-section">
         <h3 style="margin-top:0;">🎮 صالة الألعاب المصغرة</h3>
         <div class="game-card">
@@ -216,6 +218,7 @@
         </div>
     </div>
 
+    <!-- قسم المتجر -->
     <div id="tab-store" class="app-section">
         <h3 style="margin-top:0;">🏆 مركز استبدال الجوائز</h3>
         <p style="color:#94a3b8; font-size:14px;">اجمع العملات وحوّلها لجوائز كاش حقيقية</p>
@@ -231,12 +234,12 @@
     </div>
 
     <script>
-        // بدء تهيئة كود تيليجرام
+        // تفعيل مكتبة تيليجرام
         const webapp = window.Telegram.WebApp;
         webapp.ready();
         webapp.expand();
 
-        // إعداد متغيرات تخزين اللعبة محلياً وثباتها لتعمل 100%
+        // قراءة البيانات المحلية المخزنة بالمتصفح بشكل مستقر وثابت
         let points = parseInt(localStorage.getItem('arena_points')) || 0;
         let energy = parseInt(localStorage.getItem('arena_energy')) || 100;
         let isSpinning = false;
@@ -244,7 +247,7 @@
 
         document.getElementById('current-number').innerText = currentSecretNumber;
 
-        // جلب وتطبيق معلومات تيليجرام بثبات بدون قواعد بيانات حالياً لمنع التجميد
+        // قراءة وتطبيق بيانات المستخدم من تيليجرام
         if (webapp.initDataUnsafe && webapp.initDataUnsafe.user) {
             const user = webapp.initDataUnsafe.user;
             document.getElementById('player-name').innerText = `${user.first_name} ⚡`;
@@ -252,14 +255,11 @@
             if (user.photo_url) {
                 document.getElementById('user-photo').src = user.photo_url;
             } else {
-                document.getElementById('user-photo').src = `https://ui-avatars.com{user.first_name}&background=ff7a00&color=fff`;
+                document.getElementById('user-photo').src = "https://ui-avatars.com" + encodeURIComponent(user.first_name) + "&background=ff7a00&color=fff";
             }
         } else {
-            document.getElementById('player-name').innerText = "لاعب Arena ⚡";
+            document.getElementById('player-name').innerText = "لاعب الحظ ⚡";
         }
 
-        updateUI();
-
+        // دالة تحديث الواجهة وتخزين رصيد اللاعب محلياً
         function updateUI() {
-            document.getElementById('user-points').innerText = points;
-            document.getElementById('energy-text').innerText = energy;
