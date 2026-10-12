@@ -37,7 +37,7 @@
         width: min(100%, 520px);
         min-height: 100vh;
         margin: 0 auto;
-        padding: calc(18px + env(safe-area-inset-top)) 16px calc(24px + env(safe-area-inset-bottom));
+        padding: calc(18px + env(safe-area-inset-top)) 16px calc(102px + env(safe-area-inset-bottom));
       }
       .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
       .brand { font-size: 22px; font-weight: 800; letter-spacing: .2px; }
@@ -90,14 +90,15 @@
       .wheel-label {
         position: absolute; z-index: 1; top: 50%; left: 50%; width: 46%; color: #172235; font-size: clamp(11px, 3vw, 14px); font-weight: 800; text-shadow: 0 1px rgba(255,255,255,.3); transform-origin: 0 0;
       }
-      .wheel-label:nth-child(1) { transform: rotate(22.5deg) translateX(34%) translateY(-50%); }
-      .wheel-label:nth-child(2) { transform: rotate(67.5deg) translateX(34%) translateY(-50%); }
-      .wheel-label:nth-child(3) { transform: rotate(112.5deg) translateX(34%) translateY(-50%); }
-      .wheel-label:nth-child(4) { transform: rotate(157.5deg) translateX(34%) translateY(-50%); }
-      .wheel-label:nth-child(5) { transform: rotate(202.5deg) translateX(34%) translateY(-50%); }
-      .wheel-label:nth-child(6) { transform: rotate(247.5deg) translateX(34%) translateY(-50%); }
-      .wheel-label:nth-child(7) { transform: rotate(292.5deg) translateX(34%) translateY(-50%); }
-      .wheel-label:nth-child(8) { transform: rotate(337.5deg) translateX(34%) translateY(-50%); }
+      /* تتحرك النصوص مع القطاعات نفسها: زاوية conic-gradient تبدأ من أعلى العجلة. */
+      .wheel-label:nth-child(1) { transform: rotate(-67.5deg) translateX(34%) translateY(-50%); }
+      .wheel-label:nth-child(2) { transform: rotate(-22.5deg) translateX(34%) translateY(-50%); }
+      .wheel-label:nth-child(3) { transform: rotate(22.5deg) translateX(34%) translateY(-50%); }
+      .wheel-label:nth-child(4) { transform: rotate(67.5deg) translateX(34%) translateY(-50%); }
+      .wheel-label:nth-child(5) { transform: rotate(112.5deg) translateX(34%) translateY(-50%); }
+      .wheel-label:nth-child(6) { transform: rotate(157.5deg) translateX(34%) translateY(-50%); }
+      .wheel-label:nth-child(7) { transform: rotate(202.5deg) translateX(34%) translateY(-50%); }
+      .wheel-label:nth-child(8) { transform: rotate(247.5deg) translateX(34%) translateY(-50%); }
       .spin-button {
         min-width: 220px; padding: 15px 28px; border: 0; border-radius: 16px; color: #102033; background: linear-gradient(135deg, #ffbd59, #ff843e);
         box-shadow: 0 8px 0 #bb4e20, 0 12px 25px rgba(255,133,62,.25); cursor: pointer; font: inherit; font-size: 18px; font-weight: 800; transition: transform .15s, filter .15s;
@@ -107,6 +108,98 @@
       .result { min-height: 28px; margin: 20px 0 0; color: var(--green); font-weight: 800; }
       .hint { margin: 13px 0 0; color: var(--muted); font-size: 12px; }
       .notice { margin-top: 25px; padding: 12px 14px; border-radius: 14px; color: #c6d4e9; background: rgba(53,216,255,.08); border: 1px solid rgba(53,216,255,.17); font-size: 12px; line-height: 1.7; }
+      .page { display: none; }
+      .page.active { display: block; }
+      .games-heading { margin: 25px 0 8px; font-size: 22px; text-align: center; }
+      .games-copy { margin: 0 0 14px; color: var(--muted); font-size: 13px; text-align: center; }
+      .game-tabs {
+        position: sticky; z-index: 5; top: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px;
+        margin: 0 -4px 20px; padding: 7px 4px; border-radius: 17px; background: rgba(13, 23, 38, .94); backdrop-filter: blur(15px);
+        box-shadow: 0 8px 24px rgba(0,0,0,.19);
+      }
+      .game-tab { min-height: 55px; padding: 5px 3px; border: 0; border-radius: 12px; color: var(--muted); background: transparent; cursor: pointer; font: inherit; font-size: 11px; }
+      .game-tab span { display: block; margin-bottom: 3px; font-size: 19px; line-height: 20px; }
+      .game-tab.active { color: #fff; background: linear-gradient(135deg, rgba(53,216,255,.25), rgba(72,226,154,.16)); }
+      .game-panel { display: none; }
+      .game-panel.active { display: block; }
+      .section-heading { margin: 27px 0 8px; font-size: 22px; }
+      .section-copy { margin: 0 0 17px; color: var(--muted); font-size: 14px; line-height: 1.6; }
+      .bottom-nav {
+        position: fixed; z-index: 10; right: 0; bottom: 0; left: 0; display: flex; justify-content: center;
+        padding: 8px max(12px, env(safe-area-inset-left)) calc(8px + env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-right));
+        border-top: 1px solid rgba(255,255,255,.09); background: rgba(12, 21, 35, .93); backdrop-filter: blur(16px);
+      }
+      .nav-inner { display: grid; grid-template-columns: repeat(4, 1fr); width: min(100%, 520px); gap: 4px; }
+      .nav-item { min-height: 57px; border: 0; border-radius: 15px; color: var(--muted); background: transparent; cursor: pointer; font: inherit; font-size: 11px; }
+      .nav-item span { display: block; margin-bottom: 2px; font-size: 20px; line-height: 22px; }
+      .nav-item.active { color: var(--text); background: rgba(53,216,255,.12); }
+      .wallet-balance { margin: 10px 0 3px; color: var(--orange); font-size: 42px; font-weight: 800; direction: ltr; text-align: center; }
+      .wallet-unit { color: var(--muted); text-align: center; font-size: 13px; }
+      .wallet-details { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 19px; }
+      .detail-box { padding: 12px; border-radius: 15px; background: rgba(0,0,0,.18); text-align: center; }
+      .detail-box b { display: block; margin-top: 5px; color: var(--cyan); font-size: 18px; direction: ltr; }
+      .wallet-id { display: flex; align-items: center; gap: 8px; margin-top: 16px; padding: 11px; border-radius: 13px; background: rgba(0,0,0,.17); }
+      .wallet-id code { min-width: 0; flex: 1; overflow: hidden; color: #dceaff; direction: ltr; font-family: Consolas, monospace; font-size: 12px; text-align: left; text-overflow: ellipsis; white-space: nowrap; }
+      .icon-button { flex: 0 0 auto; padding: 7px 9px; border: 1px solid rgba(255,255,255,.13); border-radius: 9px; color: var(--text); background: #243652; cursor: pointer; font: inherit; font-size: 12px; }
+      .form-card { display: grid; gap: 13px; }
+      .field-label { color: var(--muted); font-size: 13px; }
+      .field { width: 100%; padding: 13px; border: 1px solid rgba(255,255,255,.13); border-radius: 13px; outline: none; color: var(--text); background: #101b2b; font: inherit; }
+      .field:focus { border-color: var(--cyan); box-shadow: 0 0 0 3px rgba(53,216,255,.12); }
+      .field[type="number"] { direction: ltr; text-align: left; }
+      .wide-button { width: 100%; padding: 14px; border: 0; border-radius: 14px; color: #102033; background: linear-gradient(135deg, var(--cyan), #7cf0ff); cursor: pointer; font: inherit; font-weight: 800; }
+      .wide-button:disabled { cursor: not-allowed; opacity: .55; }
+      .form-result { min-height: 23px; margin: 0; color: var(--green); font-size: 13px; line-height: 1.6; }
+      .mini-game { margin-top: 30px; padding: 18px; text-align: center; }
+      .mini-game h2 { margin: 0; font-size: 19px; }
+      .mini-game p { margin: 8px 0 15px; color: var(--muted); font-size: 13px; }
+      .tap-board { position: relative; height: 180px; overflow: hidden; border: 1px solid rgba(255,255,255,.1); border-radius: 18px; background: radial-gradient(circle at 50% 35%, #294e67 0, #17283c 45%, #0d1726 100%); }
+      .tap-status { display: flex; justify-content: space-between; padding: 12px 14px; color: #dfeaff; font-size: 13px; }
+      .tap-coin { position: absolute; display: none; width: 52px; height: 52px; border: 0; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #fff0a4, #ffb12b 44%, #cc6518 100%); box-shadow: 0 5px 12px rgba(0,0,0,.35); cursor: pointer; font-size: 27px; }
+      .tap-coin.visible { display: block; animation: coin-in .16s ease-out; }
+      @keyframes coin-in { from { transform: scale(.5); opacity: .2; } to { transform: scale(1); opacity: 1; } }
+      .memory-status { display: flex; justify-content: space-between; margin: 15px 2px 9px; color: #dfeaff; font-size: 13px; }
+      .memory-board { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; }
+      .memory-card { aspect-ratio: 1 / .84; border: 1px solid rgba(255,255,255,.12); border-radius: 15px; color: #bdd7ec; background: linear-gradient(145deg, #25415c, #18283b); box-shadow: 0 4px 10px rgba(0,0,0,.18); cursor: pointer; font: inherit; font-size: 28px; transition: transform .18s, background .18s; }
+      .memory-card:not(:disabled):active { transform: scale(.94); }
+      .memory-card.flipped, .memory-card.matched { color: #172235; background: linear-gradient(145deg, #f4e078, #ffad4c); }
+      .memory-card.matched { background: linear-gradient(145deg, #92f0c4, #4ed69b); }
+      .memory-card:disabled { cursor: default; }
+      .celebration {
+        position: fixed; z-index: 50; inset: 0; display: grid; place-items: center; padding: 24px;
+        overflow: hidden; opacity: 0; visibility: hidden; pointer-events: none; background: rgba(4, 10, 20, .72);
+        backdrop-filter: blur(8px); transition: opacity .25s ease, visibility .25s ease;
+      }
+      .celebration.show { opacity: 1; visibility: visible; pointer-events: auto; }
+      .celebration-card {
+        position: relative; width: min(100%, 350px); overflow: hidden; padding: 33px 24px 27px; border: 1px solid rgba(255,255,255,.24); border-radius: 30px;
+        text-align: center; background: radial-gradient(circle at 50% 2%, #3b7d98 0, #192c49 42%, #101a2a 100%); box-shadow: 0 22px 65px rgba(0,0,0,.5); transform: scale(.72) translateY(22px);
+      }
+      .celebration.show .celebration-card { animation: celebration-pop .52s cubic-bezier(.17,.85,.28,1.22) forwards; }
+      @keyframes celebration-pop { to { transform: scale(1) translateY(0); } }
+      .celebration-glow { position: absolute; top: -105px; left: 50%; width: 255px; height: 255px; border-radius: 50%; transform: translateX(-50%); background: radial-gradient(circle, rgba(255,207,74,.75), rgba(255,207,74,0) 68%); }
+      .celebration-icon { position: relative; width: 89px; height: 89px; margin: 0 auto 13px; border: 5px solid rgba(255,255,255,.88); border-radius: 50%; display: grid; place-items: center; font-size: 44px; background: linear-gradient(145deg, #ffda70, #ef8c39); box-shadow: 0 0 0 9px rgba(255,207,74,.14), 0 12px 22px rgba(0,0,0,.27); }
+      .celebration.show .celebration-icon { animation: reward-bounce .75s .16s both; }
+      @keyframes reward-bounce { 0% { transform: scale(.2) rotate(-18deg); } 58% { transform: scale(1.17) rotate(9deg); } 100% { transform: scale(1) rotate(0); } }
+      .celebration-kicker { position: relative; margin: 0; color: #d2e7f8; font-size: 13px; }
+      .celebration-title { position: relative; margin: 6px 0 0; font-size: 28px; }
+      .celebration-reward { position: relative; margin: 11px 0 6px; color: #ffcf4a; font-size: 27px; font-weight: 800; direction: rtl; }
+      .celebration-note { position: relative; margin: 0; color: #b9c9dc; font-size: 13px; line-height: 1.6; }
+      .celebration-close { position: absolute; z-index: 2; top: 12px; left: 12px; width: 32px; height: 32px; border: 0; border-radius: 50%; color: white; background: rgba(255,255,255,.11); cursor: pointer; font: inherit; font-size: 21px; }
+      .confetti-layer { position: absolute; inset: 0; pointer-events: none; }
+      .confetti { position: absolute; top: -22px; width: 9px; height: 16px; border-radius: 3px; background: var(--confetti-color); animation: confetti-fall var(--confetti-duration) var(--confetti-delay) ease-in both; }
+      @keyframes confetti-fall { 0% { transform: translate3d(0, 0, 0) rotate(0); opacity: 0; } 10% { opacity: 1; } 100% { transform: translate3d(var(--confetti-drift), 470px, 0) rotate(650deg); opacity: 0; } }
+      .secondary-button { width: 100%; margin-top: 12px; padding: 12px; border: 1px solid rgba(255,255,255,.15); border-radius: 13px; color: var(--text); background: rgba(255,255,255,.07); cursor: pointer; font: inherit; font-weight: 700; }
+      .setting-row { display: flex; align-items: center; justify-content: space-between; gap: 15px; padding: 15px 0; border-bottom: 1px solid rgba(255,255,255,.08); }
+      .setting-row:last-child { border-bottom: 0; }
+      .setting-row p { margin: 4px 0 0; color: var(--muted); font-size: 12px; line-height: 1.5; }
+      .toggle { position: relative; width: 47px; height: 28px; flex: 0 0 47px; cursor: pointer; }
+      .toggle input { position: absolute; opacity: 0; }
+      .toggle span { position: absolute; inset: 0; border-radius: 999px; background: #3a4a61; transition: .2s; }
+      .toggle span::after { position: absolute; top: 4px; right: 4px; width: 20px; height: 20px; border-radius: 50%; background: white; content: ""; transition: .2s; }
+      .toggle input:checked + span { background: #1abfcb; }
+      .toggle input:checked + span::after { transform: translateX(-19px); }
+      .danger-button { width: 100%; margin-top: 17px; padding: 12px; border: 1px solid rgba(255,101,111,.55); border-radius: 13px; color: #ffc4c7; background: rgba(255,101,111,.1); cursor: pointer; font: inherit; }
+      body.reduce-motion *, body.reduce-motion *::before, body.reduce-motion *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; }
     </style>
   </head>
   <body>
@@ -132,25 +225,125 @@
         <div class="energy-bar"><div id="energyFill" class="energy-fill"></div></div>
       </section>
 
-      <section class="game" aria-label="عجلة الحظ">
-        <h1 class="title">🎡 عجلة الحظ</h1>
-        <p class="subtitle">كل دورة تكلّف 20 طاقة</p>
-        <div class="wheel-area">
-          <div class="pointer" aria-hidden="true"></div>
-          <div class="wheel-wrap">
-            <div id="wheel" class="wheel" aria-label="عجلة الجوائز">
-              <span class="wheel-label">10</span><span class="wheel-label">25</span><span class="wheel-label">50</span><span class="wheel-label">100</span>
-              <span class="wheel-label">20⚡</span><span class="wheel-label">30⚡</span><span class="wheel-label">75</span><span class="wheel-label">200</span>
-            </div>
-          </div>
+      <section id="homePage" class="page active" aria-label="الرئيسية">
+        <h1 class="games-heading">🎮 منطقة الألعاب</h1>
+        <p class="games-copy">اختر لعبة من الشريط العلوي.</p>
+        <div class="game-tabs" role="tablist" aria-label="اختيار اللعبة">
+          <button class="game-tab active" type="button" role="tab" aria-selected="true" data-game="wheel"><span>🎡</span>عجلة الحظ</button>
+          <button class="game-tab" type="button" role="tab" aria-selected="false" data-game="tap"><span>🪙</span>اصطد العملة</button>
+          <button class="game-tab" type="button" role="tab" aria-selected="false" data-game="memory"><span>🧠</span>تحدي الذاكرة</button>
         </div>
-        <button id="spinButton" class="spin-button" type="button">أدر العجلة — 20 ⚡</button>
-        <p id="result" class="result" aria-live="polite"></p>
-        <p class="hint">تُشحن طاقة واحدة كل دقيقة.</p>
+
+        <section id="wheelGame" class="game-panel active" aria-label="عجلة الحظ">
+          <div class="game">
+            <h2 class="title">🎡 عجلة الحظ</h2>
+            <p class="subtitle">كل دورة تكلّف 20 طاقة</p>
+            <div class="wheel-area">
+              <div class="pointer" aria-hidden="true"></div>
+              <div class="wheel-wrap">
+                <div id="wheel" class="wheel" aria-label="عجلة الجوائز">
+                  <span class="wheel-label">10</span><span class="wheel-label">25</span><span class="wheel-label">50</span><span class="wheel-label">100</span>
+                  <span class="wheel-label">20⚡</span><span class="wheel-label">30⚡</span><span class="wheel-label">75</span><span class="wheel-label">200</span>
+                </div>
+              </div>
+            </div>
+            <button id="spinButton" class="spin-button" type="button">أدر العجلة — 20 ⚡</button>
+            <p id="result" class="result" aria-live="polite"></p>
+            <p class="hint">تُشحن طاقة واحدة كل دقيقة.</p>
+          </div>
+        </section>
+
+        <section id="tapGame" class="game-panel card mini-game" aria-label="لعبة اصطد العملة">
+          <h2>🪙 اصطد العملة</h2>
+          <p>لديك 10 ثوانٍ. اضغط العملة كلما ظهرت وسجّل أعلى نتيجة.</p>
+          <div id="tapBoard" class="tap-board">
+            <div class="tap-status"><span>النتيجة: <b id="tapScore">0</b></span><span id="tapTime">جاهز</span></div>
+            <button id="tapCoin" class="tap-coin" type="button" aria-label="اصطد العملة">🪙</button>
+          </div>
+          <button id="startTapGame" class="secondary-button" type="button">ابدأ اللعبة</button>
+          <p id="tapResult" class="form-result" aria-live="polite"></p>
+        </section>
+
+        <section id="memoryGame" class="game-panel card mini-game" aria-label="لعبة تحدي الذاكرة">
+          <h2>🧠 تحدي الذاكرة</h2>
+          <p>احفظ أماكن الرموز، ثم طابق كل الرموز المتشابهة خلال 30 ثانية.</p>
+          <div class="memory-status"><span>الأزواج: <b id="memoryPairs">0</b>/3</span><span id="memoryTime">جاهز</span></div>
+          <div id="memoryBoard" class="memory-board" aria-label="بطاقات الذاكرة"></div>
+          <button id="startMemoryGame" class="secondary-button" type="button">ابدأ التحدي</button>
+          <p id="memoryResult" class="form-result" aria-live="polite"></p>
+        </section>
+      </section>
+
+      <section id="walletPage" class="page" aria-label="المحفظة">
+        <h1 class="section-heading">💼 محفظتي</h1>
+        <p class="section-copy">رصيدك الحالي من عملة ArenaCoin داخل اللعبة.</p>
+        <section class="card">
+          <div id="walletBalance" class="wallet-balance">0</div>
+          <div class="wallet-unit">عملة AC</div>
+          <div class="wallet-details">
+            <div class="detail-box"><span class="stat-label">الطاقة المتاحة</span><b id="walletEnergy">100</b></div>
+            <div class="detail-box"><span class="stat-label">أفضل نتيجة</span><b id="bestTapScore">0</b></div>
+          </div>
+          <div class="wallet-id"><code id="walletId">AC-...</code><button id="copyIdButton" class="icon-button" type="button">نسخ</button></div>
+        </section>
+        <p class="notice">هذه محفظة داخل التطبيق وليست محفظة بلوك تشين. تصبح التحويلات حقيقية فقط بعد ربطها بالخادم وقاعدة البيانات.</p>
+      </section>
+
+      <section id="transferPage" class="page" aria-label="تحويل العملة">
+        <h1 class="section-heading">↔️ تحويل العملة</h1>
+        <p class="section-copy">أرسل عملات AC إلى لاعب آخر باستخدام معرّف محفظته.</p>
+        <form id="transferForm" class="card form-card">
+          <label class="field-label" for="receiverId">معرّف المستلم</label>
+          <input id="receiverId" class="field" name="receiver" autocomplete="off" placeholder="مثال: AC-123456" required />
+          <label class="field-label" for="transferAmount">عدد العملات</label>
+          <input id="transferAmount" class="field" name="amount" type="number" inputmode="numeric" min="1" step="1" placeholder="0" required />
+          <button id="transferButton" class="wide-button" type="submit">تحويل الآن</button>
+          <p id="transferResult" class="form-result" aria-live="polite"></p>
+        </form>
+        <p class="notice">في وضع التجربة يتم تسجيل التحويل محليًا فقط ولا يصل إلى مستخدم آخر. في تيليجرام، ينتظر الزر خادم التحويل الآمن.</p>
+      </section>
+
+      <section id="settingsPage" class="page" aria-label="الإعدادات">
+        <h1 class="section-heading">⚙️ الإعدادات</h1>
+        <p class="section-copy">خصّص تجربة اللعب على جهازك.</p>
+        <section class="card">
+          <div class="setting-row">
+            <div><b>الاهتزاز</b><p>اهتزاز خفيف عند الفوز من داخل تيليجرام.</p></div>
+            <label class="toggle"><input id="hapticsToggle" type="checkbox" checked /><span></span></label>
+          </div>
+          <div class="setting-row">
+            <div><b>الحركات</b><p>تشغيل دوران العجلة وانتقال العناصر.</p></div>
+            <label class="toggle"><input id="animationsToggle" type="checkbox" checked /><span></span></label>
+          </div>
+          <button id="resetDemoButton" class="danger-button" type="button">إعادة ضبط بيانات التجربة على هذا الجهاز</button>
+        </section>
+        <p id="settingsResult" class="form-result"></p>
       </section>
 
       <p id="cloudStatus" class="notice">جاري تجهيز بيانات اللاعب...</p>
     </main>
+
+    <nav class="bottom-nav" aria-label="التنقل الرئيسي">
+      <div class="nav-inner">
+        <button class="nav-item active" type="button" data-page="home"><span>🎮</span>الرئيسية</button>
+        <button class="nav-item" type="button" data-page="wallet"><span>💼</span>المحفظة</button>
+        <button class="nav-item" type="button" data-page="transfer"><span>↔️</span>تحويل</button>
+        <button class="nav-item" type="button" data-page="settings"><span>⚙️</span>الإعدادات</button>
+      </div>
+    </nav>
+
+    <section id="celebration" class="celebration" aria-live="assertive" aria-hidden="true">
+      <div class="celebration-card" role="status">
+        <div id="confettiLayer" class="confetti-layer" aria-hidden="true"></div>
+        <button id="celebrationClose" class="celebration-close" type="button" aria-label="إغلاق">×</button>
+        <div class="celebration-glow" aria-hidden="true"></div>
+        <div id="celebrationIcon" class="celebration-icon">🎉</div>
+        <p class="celebration-kicker">إنجاز جديد!</p>
+        <h2 id="celebrationTitle" class="celebration-title">مبروك يا بطل!</h2>
+        <p id="celebrationReward" class="celebration-reward">+0 نقطة</p>
+        <p id="celebrationNote" class="celebration-note">كل لعبة تقرّبك من رصيد أكبر.</p>
+      </div>
+    </section>
 
     <script>
       (() => {
@@ -161,16 +354,8 @@
         const RECHARGE_INTERVAL = 60 * 1000;
         const FIREBASE_TIMEOUT = 8000;
 
-        // إعدادات مشروع Firebase الخاص بك.
-        const firebaseConfig = {
-          apiKey: "AIzaSyBNI0BrFz4LqPPALvtUAbNhZOC6GDc7hsE",
-          authDomain: "arenacoin-f0cc8.firebaseapp.com",
-          projectId: "arenacoin-f0cc8",
-          storageBucket: "arenacoin-f0cc8.firebasestorage.app",
-          messagingSenderId: "415637288138",
-          appId: "1:415637288138:web:4acd633f6fedcdc8513033",
-          measurementId: "G-BT6316JW2S"
-        };
+        // لا توجد مفاتيح Firebase أو صلاحية كتابة قاعدة البيانات في المتصفح.
+        const FUNCTION_BASE_URL = "https://us-central1-arenacoin-f0cc8.cloudfunctions.net";
         const prizes = [
           { label: "+10 نقطة", type: "coins", value: 10 },
           { label: "+25 نقطة", type: "coins", value: 25 },
@@ -192,17 +377,26 @@
         const user = telegramUser || { id: "demo-player", first_name: "لاعب تجريبي" };
         const playerId = String(user.id);
         const storageKey = `arenaCoin.player.${playerId}`;
-        const initialState = { coins: 0, energy: MAX_ENERGY, energyUpdatedAt: Date.now() };
+        const initialState = { coins: 0, energy: MAX_ENERGY, energyUpdatedAt: Date.now(), bestTapScore: 0, bestMemoryTime: 0 };
         let state = loadState();
+        let preferences = loadPreferences();
         let spinning = false;
         let rotation = 0;
-        let db = null;
-        let firestore = null;
-        let cloudAvailable = false;
         let dataReady = !telegramUser;
-        let cloudSaveTimer = null;
-        let cloudWriteInProgress = false;
-        let cloudWritePending = false;
+        let tapScore = 0;
+        let tapGameRunning = false;
+        let tapGameInterval;
+        let tapCoinInterval;
+        const memorySymbols = ["🌟", "⚽", "🎯"];
+        let memoryDeck = [];
+        let memorySelected = [];
+        let memoryPairs = 0;
+        let memoryGameRunning = false;
+        let memorySecondsLeft = 30;
+        let memoryTimer;
+        let memoryPreviewTimer;
+        let memoryFlipTimer;
+        let celebrationTimer;
 
         const elements = {
           photo: document.getElementById("userPhoto"),
@@ -215,7 +409,43 @@
           wheel: document.getElementById("wheel"),
           button: document.getElementById("spinButton"),
           result: document.getElementById("result"),
-          cloudStatus: document.getElementById("cloudStatus")
+          cloudStatus: document.getElementById("cloudStatus"),
+          walletBalance: document.getElementById("walletBalance"),
+          walletEnergy: document.getElementById("walletEnergy"),
+          bestTapScore: document.getElementById("bestTapScore"),
+          walletId: document.getElementById("walletId"),
+          copyIdButton: document.getElementById("copyIdButton"),
+          transferForm: document.getElementById("transferForm"),
+          receiverId: document.getElementById("receiverId"),
+          transferAmount: document.getElementById("transferAmount"),
+          transferButton: document.getElementById("transferButton"),
+          transferResult: document.getElementById("transferResult"),
+          tapBoard: document.getElementById("tapBoard"),
+          tapCoin: document.getElementById("tapCoin"),
+          tapScore: document.getElementById("tapScore"),
+          tapTime: document.getElementById("tapTime"),
+          tapResult: document.getElementById("tapResult"),
+          startTapGame: document.getElementById("startTapGame"),
+          gameTabs: document.querySelectorAll(".game-tab"),
+          gamePanels: document.querySelectorAll(".game-panel"),
+          memoryBoard: document.getElementById("memoryBoard"),
+          memoryPairs: document.getElementById("memoryPairs"),
+          memoryTime: document.getElementById("memoryTime"),
+          memoryResult: document.getElementById("memoryResult"),
+          startMemoryGame: document.getElementById("startMemoryGame"),
+          celebration: document.getElementById("celebration"),
+          celebrationIcon: document.getElementById("celebrationIcon"),
+          celebrationTitle: document.getElementById("celebrationTitle"),
+          celebrationReward: document.getElementById("celebrationReward"),
+          celebrationNote: document.getElementById("celebrationNote"),
+          celebrationClose: document.getElementById("celebrationClose"),
+          confettiLayer: document.getElementById("confettiLayer"),
+          hapticsToggle: document.getElementById("hapticsToggle"),
+          animationsToggle: document.getElementById("animationsToggle"),
+          resetDemoButton: document.getElementById("resetDemoButton"),
+          settingsResult: document.getElementById("settingsResult"),
+          navItems: document.querySelectorAll(".nav-item"),
+          pages: document.querySelectorAll(".page")
         };
 
         function loadState() {
@@ -225,7 +455,9 @@
             return {
               coins: Number.isFinite(saved.coins) ? Math.max(0, saved.coins) : 0,
               energy: Number.isFinite(saved.energy) ? Math.min(MAX_ENERGY, Math.max(0, saved.energy)) : MAX_ENERGY,
-              energyUpdatedAt: Number.isFinite(saved.energyUpdatedAt) ? saved.energyUpdatedAt : Date.now()
+              energyUpdatedAt: Number.isFinite(saved.energyUpdatedAt) ? saved.energyUpdatedAt : Date.now(),
+              bestTapScore: Number.isFinite(saved.bestTapScore) ? Math.max(0, saved.bestTapScore) : 0,
+              bestMemoryTime: Number.isFinite(saved.bestMemoryTime) ? Math.max(0, saved.bestMemoryTime) : 0
             };
           } catch {
             return { ...initialState };
@@ -236,14 +468,24 @@
           localStorage.setItem(storageKey, JSON.stringify(state));
         }
 
-        function setCloudStatus(message) {
-          elements.cloudStatus.textContent = message;
+        function loadPreferences() {
+          try {
+            const saved = JSON.parse(localStorage.getItem(`${storageKey}.settings`));
+            return {
+              haptics: saved?.haptics !== false,
+              animations: saved?.animations !== false
+            };
+          } catch {
+            return { haptics: true, animations: true };
+          }
         }
 
-        function rejectAfter(milliseconds, message) {
-          return new Promise((_, reject) => {
-            window.setTimeout(() => reject(new Error(message)), milliseconds);
-          });
+        function savePreferences() {
+          localStorage.setItem(`${storageKey}.settings`, JSON.stringify(preferences));
+        }
+
+        function setCloudStatus(message) {
+          elements.cloudStatus.textContent = message;
         }
 
         function refreshEnergy() {
@@ -266,11 +508,15 @@
         }
 
         function updateUI() {
-          const energyRecovered = refreshEnergy();
+          refreshEnergy();
           elements.coins.textContent = state.coins.toLocaleString("ar");
           elements.energy.textContent = state.energy.toLocaleString("ar");
           elements.energyFill.style.width = `${state.energy}%`;
           elements.button.disabled = !dataReady || spinning || state.energy < SPIN_COST;
+          elements.walletBalance.textContent = state.coins.toLocaleString("ar");
+          elements.walletEnergy.textContent = state.energy.toLocaleString("ar");
+          elements.bestTapScore.textContent = state.bestTapScore.toLocaleString("ar");
+          elements.transferButton.disabled = !dataReady;
           if (state.energy === MAX_ENERGY) {
             elements.recharge.textContent = "ممتلئة";
           } else {
@@ -278,7 +524,6 @@
             elements.recharge.textContent = formatTime(nextEnergyIn);
           }
           saveState();
-          if (energyRecovered) scheduleCloudSave();
         }
 
         function makeAvatar(name) {
@@ -292,115 +537,56 @@
           elements.name.textContent = name;
           elements.photo.src = user.photo_url || makeAvatar(name);
           elements.demoBadge.classList.toggle("visible", !telegramUser);
+          elements.walletId.textContent = `AC-${playerId}`;
         }
 
-        function playerDocument() {
-          return firestore.doc(db, "players", playerId);
+        function applyServerState(player) {
+          if (Number.isFinite(player?.coins)) state.coins = Math.max(0, player.coins);
+          if (Number.isFinite(player?.energy)) state.energy = Math.min(MAX_ENERGY, Math.max(0, player.energy));
+          if (Number.isFinite(player?.energyUpdatedAt)) state.energyUpdatedAt = player.energyUpdatedAt;
         }
 
-        function cloudPayload(includeCreatedAt = false) {
-          const playerName = [user.first_name, user.last_name].filter(Boolean).join(" ") || "لاعب ArenaCoin";
-          const payload = {
-            telegramId: playerId,
-            name: playerName,
-            username: user.username || "",
-            photoUrl: user.photo_url || "",
-            coins: state.coins,
-            energy: state.energy,
-            energyUpdatedAt: state.energyUpdatedAt,
-            updatedAt: firestore.serverTimestamp()
-          };
-          if (includeCreatedAt) payload.createdAt = firestore.serverTimestamp();
-          return payload;
-        }
+        async function callSecureServer(endpoint, payload = {}) {
+          if (!telegram || !telegram.initData) throw new Error("Telegram init data is unavailable");
 
-        async function writeCloudState(includeCreatedAt = false) {
-          if (!cloudAvailable || !dataReady) return;
-          if (cloudWriteInProgress) {
-            cloudWritePending = true;
-            return;
-          }
-          cloudWriteInProgress = true;
+          const controller = new AbortController();
+          const timeout = window.setTimeout(() => controller.abort(), FIREBASE_TIMEOUT);
           try {
-            await firestore.setDoc(playerDocument(), cloudPayload(includeCreatedAt), { merge: true });
-            setCloudStatus("✅ تم حفظ الاسم والنقاط والطاقة في Firebase.");
-          } catch (error) {
-            console.error("Firebase save error:", error);
-            setCloudStatus("⚠️ تعذّر الحفظ في Firebase الآن، والبيانات محفوظة محليًا مؤقتًا.");
+            const response = await fetch(`${FUNCTION_BASE_URL}/${endpoint}`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ initData: telegram.initData, ...payload }),
+              signal: controller.signal
+            });
+            const body = await response.json().catch(() => ({}));
+            if (!response.ok) throw new Error(body.error || "The secure server rejected the request");
+            return body;
           } finally {
-            cloudWriteInProgress = false;
-            if (cloudWritePending) {
-              cloudWritePending = false;
-              writeCloudState();
-            }
+            window.clearTimeout(timeout);
           }
         }
 
-        function scheduleCloudSave() {
-          if (!cloudAvailable || !dataReady) return;
-          window.clearTimeout(cloudSaveTimer);
-          cloudSaveTimer = window.setTimeout(() => writeCloudState(), 350);
-        }
-
-        function applyCloudState(data) {
-          if (Number.isFinite(data.coins)) state.coins = Math.max(0, data.coins);
-          if (Number.isFinite(data.energy)) state.energy = Math.min(MAX_ENERGY, Math.max(0, data.energy));
-          if (Number.isFinite(data.energyUpdatedAt)) state.energyUpdatedAt = data.energyUpdatedAt;
-        }
-
-        async function connectFirebase() {
+        async function connectSecureServer() {
           if (!telegramUser) {
-            setCloudStatus("وضع التجربة: افتح التطبيق من داخل تيليجرام ليحفظ بيانات اللاعب في Firebase.");
+            setCloudStatus("وضع التجربة: افتح التطبيق من داخل تيليجرام بعد نشر الخادم الآمن.");
             dataReady = true;
             updateUI();
             return;
           }
 
-          setCloudStatus("جاري تحميل بياناتك من Firebase...");
+          setCloudStatus("جاري التحقق من حسابك وتحميل بياناتك بأمان...");
           try {
-            const [firebaseApp, firebaseFirestore] = await Promise.race([
-              Promise.all([
-                import("https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js"),
-                import("https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js")
-              ]),
-              rejectAfter(FIREBASE_TIMEOUT, "Firebase SDK timed out")
-            ]);
-            const app = firebaseApp.initializeApp(firebaseConfig);
-            db = firebaseFirestore.getFirestore(app);
-            firestore = firebaseFirestore;
-            cloudAvailable = true;
-
-            const snapshot = await Promise.race([
-              firestore.getDoc(playerDocument()),
-              rejectAfter(FIREBASE_TIMEOUT, "Firestore read timed out")
-            ]);
-            if (snapshot.exists()) {
-              applyCloudState(snapshot.data());
-              setCloudStatus("✅ تم تحميل بياناتك من Firebase.");
-            }
-
+            const response = await callSecureServer("bootstrapPlayer");
+            applyServerState(response.player);
             dataReady = true;
+            setCloudStatus("🔒 بياناتك محمية: الخادم هو الذي يحسب الجوائز ويحفظ النقاط.");
             updateUI();
-
-            if (!snapshot.exists()) {
-              await writeCloudState(true);
-            }
           } catch (error) {
-            console.error("Firebase connection error:", error);
-            cloudAvailable = false;
-            dataReady = true;
-            setCloudStatus("⚠️ تعذّر الاتصال بـFirebase. التطبيق يعمل محليًا الآن؛ تأكد أنك أنشأت Cloud Firestore وليس Realtime Database، ثم راجع Rules.");
+            console.error("Secure server connection error:", error);
+            dataReady = false;
+            setCloudStatus("⚠️ الخادم الآمن غير متاح بعد. انشر Cloud Functions ثم أعد فتح التطبيق.");
             updateUI();
           }
-        }
-
-        function randomIndex(max) {
-          if (window.crypto && window.crypto.getRandomValues) {
-            const values = new Uint32Array(1);
-            window.crypto.getRandomValues(values);
-            return values[0] % max;
-          }
-          return Math.floor(Math.random() * max);
         }
 
         function showTelegramMessage(message) {
@@ -408,10 +594,423 @@
           else window.alert(message);
         }
 
-        function spin() {
+        function navigateTo(pageName) {
+          elements.pages.forEach(page => page.classList.toggle("active", page.id === `${pageName}Page`));
+          elements.navItems.forEach(item => item.classList.toggle("active", item.dataset.page === pageName));
+          if (telegram && telegram.HapticFeedback && preferences.haptics) telegram.HapticFeedback.selectionChanged();
+          window.scrollTo({ top: 0, behavior: preferences.animations ? "smooth" : "auto" });
+        }
+
+        function navigateGame(gameName) {
+          elements.gamePanels.forEach(panel => panel.classList.toggle("active", panel.id === `${gameName}Game`));
+          elements.gameTabs.forEach(tab => {
+            const active = tab.dataset.game === gameName;
+            tab.classList.toggle("active", active);
+            tab.setAttribute("aria-selected", String(active));
+          });
+          if (telegram && telegram.HapticFeedback && preferences.haptics) telegram.HapticFeedback.selectionChanged();
+        }
+
+        function hideCelebration() {
+          window.clearTimeout(celebrationTimer);
+          elements.celebration.classList.remove("show");
+          elements.celebration.setAttribute("aria-hidden", "true");
+        }
+
+        function showCelebration({ icon = "🎉", title = "مبروك يا بطل!", reward, note = "كل لعبة تقرّبك من رصيد أكبر." }) {
+          const colors = ["#ffcf4a", "#35d8ff", "#6ff0a7", "#ff7c73", "#b98aff"];
+          window.clearTimeout(celebrationTimer);
+          elements.celebrationIcon.textContent = icon;
+          elements.celebrationTitle.textContent = title;
+          elements.celebrationReward.textContent = reward;
+          elements.celebrationNote.textContent = note;
+          elements.confettiLayer.replaceChildren();
+
+          for (let index = 0; index < 24; index += 1) {
+            const piece = document.createElement("span");
+            piece.className = "confetti";
+            piece.style.left = `${Math.random() * 100}%`;
+            piece.style.setProperty("--confetti-color", colors[index % colors.length]);
+            piece.style.setProperty("--confetti-delay", `${Math.random() * .35}s`);
+            piece.style.setProperty("--confetti-duration", `${1.35 + Math.random() * .85}s`);
+            piece.style.setProperty("--confetti-drift", `${-95 + Math.random() * 190}px`);
+            elements.confettiLayer.append(piece);
+          }
+
+          elements.celebration.classList.remove("show");
+          void elements.celebration.offsetWidth;
+          elements.celebration.classList.add("show");
+          elements.celebration.setAttribute("aria-hidden", "false");
+          celebrationTimer = window.setTimeout(hideCelebration, 4300);
+        }
+
+        function shuffle(values) {
+          const copy = [...values];
+          for (let index = copy.length - 1; index > 0; index -= 1) {
+            const randomIndex = Math.floor(Math.random() * (index + 1));
+            [copy[index], copy[randomIndex]] = [copy[randomIndex], copy[index]];
+          }
+          return copy;
+        }
+
+        function renderMemoryBoard(revealCards = false) {
+          elements.memoryBoard.replaceChildren();
+          memoryDeck.forEach((symbol, index) => {
+            const card = document.createElement("button");
+            card.type = "button";
+            card.className = "memory-card";
+            card.dataset.index = String(index);
+            card.dataset.symbol = symbol;
+            card.setAttribute("aria-label", "بطاقة ذاكرة");
+            if (revealCards) {
+              card.classList.add("flipped");
+              card.textContent = symbol;
+            } else {
+              card.textContent = "؟";
+            }
+            card.addEventListener("click", flipMemoryCard);
+            elements.memoryBoard.append(card);
+          });
+        }
+
+        function updateMemoryStatus() {
+          elements.memoryPairs.textContent = memoryPairs.toLocaleString("ar");
+          elements.memoryTime.textContent = memoryGameRunning ? `${memorySecondsLeft.toLocaleString("ar")} ث` : "جاهز";
+        }
+
+        function stopMemoryGame(message) {
+          window.clearInterval(memoryTimer);
+          window.clearTimeout(memoryPreviewTimer);
+          window.clearTimeout(memoryFlipTimer);
+          memoryGameRunning = false;
+          elements.startMemoryGame.disabled = false;
+          elements.startMemoryGame.textContent = "العب مرة أخرى";
+          elements.memoryResult.textContent = message;
+          elements.memoryPairs.textContent = memoryPairs.toLocaleString("ar");
+          elements.memoryTime.textContent = memorySecondsLeft === 0 ? "انتهى" : "تم";
+          saveState();
+        }
+
+        function finishMemoryGame() {
+          const usedSeconds = 30 - memorySecondsLeft;
+          if (!state.bestMemoryTime || usedSeconds < state.bestMemoryTime) {
+            state.bestMemoryTime = usedSeconds;
+            stopMemoryGame(`🏆 ممتاز! أنهيت التحدي خلال ${usedSeconds.toLocaleString("ar")} ث، وهي أفضل نتيجة لك.`);
+          } else {
+            stopMemoryGame(`أحسنت! أنهيت التحدي خلال ${usedSeconds.toLocaleString("ar")} ث.`);
+          }
+          void awardMemoryWin();
+          if (telegram && telegram.HapticFeedback && preferences.haptics) telegram.HapticFeedback.notificationOccurred("success");
+        }
+
+        async function awardMemoryWin() {
+          elements.startMemoryGame.disabled = true;
+          elements.memoryResult.textContent += " جاري اختيار المكافأة...";
+          try {
+            if (!telegramUser) {
+              const reward = Math.floor(Math.random() * 20) + 1;
+              state.coins += reward;
+              elements.memoryResult.textContent += ` 🎁 ربحت ${reward.toLocaleString("ar")} نقطة!`;
+              showCelebration({
+                icon: "🧠",
+                title: "ذاكرتك خارقة!",
+                reward: `+${reward.toLocaleString("ar")} نقطة`,
+                note: "فوز جميل — استمر لتكبر محفظتك أكثر."
+              });
+              return;
+            }
+            const response = await callSecureServer("claimMemoryReward");
+            applyServerState(response.player);
+            elements.memoryResult.textContent += ` 🎁 ربحت ${response.reward.coins.toLocaleString("ar")} نقطة!`;
+            showCelebration({
+              icon: "🧠",
+              title: "ذاكرتك خارقة!",
+              reward: `+${response.reward.coins.toLocaleString("ar")} نقطة`,
+              note: "فوز جميل — استمر لتكبر محفظتك أكثر."
+            });
+          } catch (error) {
+            console.error("Memory reward error:", error);
+            elements.memoryResult.textContent += " لم تُضف المكافأة؛ جرّب بعد قليل.";
+          } finally {
+            elements.startMemoryGame.disabled = false;
+            updateUI();
+          }
+        }
+
+        function startMemoryGame() {
+          window.clearInterval(memoryTimer);
+          window.clearTimeout(memoryPreviewTimer);
+          window.clearTimeout(memoryFlipTimer);
+          memoryDeck = shuffle([...memorySymbols, ...memorySymbols]);
+          memorySelected = [];
+          memoryPairs = 0;
+          memorySecondsLeft = 30;
+          memoryGameRunning = false;
+          elements.memoryResult.textContent = "احفظ مواقع الرموز...";
+          elements.startMemoryGame.disabled = true;
+          elements.startMemoryGame.textContent = "احفظ الرموز";
+          renderMemoryBoard(true);
+          elements.memoryPairs.textContent = "0";
+          elements.memoryTime.textContent = "استعد";
+
+          memoryPreviewTimer = window.setTimeout(() => {
+            elements.memoryBoard.querySelectorAll(".memory-card").forEach(card => {
+              card.classList.remove("flipped");
+              card.textContent = "؟";
+            });
+            memoryGameRunning = true;
+            elements.startMemoryGame.textContent = "التحدي مستمر";
+            updateMemoryStatus();
+            memoryTimer = window.setInterval(() => {
+              memorySecondsLeft -= 1;
+              if (memorySecondsLeft <= 0) {
+                memorySecondsLeft = 0;
+                stopMemoryGame("انتهى الوقت. جرّب مرة أخرى واطابق الرموز أسرع!");
+                return;
+              }
+              updateMemoryStatus();
+            }, 1000);
+          }, 1200);
+        }
+
+        function flipMemoryCard(event) {
+          if (!memoryGameRunning) return;
+          const card = event.currentTarget;
+          const index = Number(card.dataset.index);
+          if (card.classList.contains("flipped") || card.classList.contains("matched") || memorySelected.length === 2) return;
+          card.classList.add("flipped");
+          card.textContent = card.dataset.symbol;
+          memorySelected.push({ index, card });
+          if (telegram && telegram.HapticFeedback && preferences.haptics) telegram.HapticFeedback.impactOccurred("light");
+          if (memorySelected.length !== 2) return;
+
+          const [first, second] = memorySelected;
+          if (first.card.dataset.symbol === second.card.dataset.symbol) {
+            first.card.classList.add("matched");
+            second.card.classList.add("matched");
+            memorySelected = [];
+            memoryPairs += 1;
+            updateMemoryStatus();
+            if (memoryPairs === memorySymbols.length) finishMemoryGame();
+            return;
+          }
+
+          memoryFlipTimer = window.setTimeout(() => {
+            [first, second].forEach(selected => {
+              selected.card.classList.remove("flipped");
+              selected.card.textContent = "؟";
+            });
+            memorySelected = [];
+          }, 650);
+        }
+
+        function positionTapCoin() {
+          const coinSize = 52;
+          const maxX = Math.max(0, elements.tapBoard.clientWidth - coinSize);
+          const maxY = Math.max(45, elements.tapBoard.clientHeight - coinSize);
+          elements.tapCoin.style.left = `${Math.floor(Math.random() * (maxX + 1))}px`;
+          elements.tapCoin.style.top = `${45 + Math.floor(Math.random() * (maxY - 44))}px`;
+          elements.tapCoin.classList.add("visible");
+        }
+
+        function finishTapGame() {
+          window.clearInterval(tapGameInterval);
+          window.clearInterval(tapCoinInterval);
+          tapGameRunning = false;
+          elements.tapCoin.classList.remove("visible");
+          elements.startTapGame.disabled = true;
+          elements.startTapGame.textContent = "جاري إضافة المكافأة";
+          elements.tapTime.textContent = "انتهى الوقت";
+          if (tapScore > state.bestTapScore) {
+            state.bestTapScore = tapScore;
+            elements.tapResult.textContent = `🏆 نتيجة جديدة! اصطدت ${tapScore} عملة. جاري إضافة النقاط...`;
+          } else {
+            elements.tapResult.textContent = `انتهى الوقت — اصطدت ${tapScore} عملة. جاري إضافة النقاط...`;
+          }
+          saveState();
+          void awardTapCoins(tapScore);
+        }
+
+        async function awardTapCoins(caughtCoins) {
+          try {
+            if (caughtCoins === 0) {
+              elements.tapResult.textContent = "انتهى الوقت — لم تصطد أي عملة هذه المرة.";
+              return;
+            }
+            if (!telegramUser) {
+              state.coins += caughtCoins;
+              elements.tapResult.textContent += ` 🎁 أُضيفت ${caughtCoins.toLocaleString("ar")} نقطة إلى رصيدك.`;
+              showCelebration({
+                icon: "🪙",
+                title: "صيّاد العملات!",
+                reward: `+${caughtCoins.toLocaleString("ar")} نقطة`,
+                note: "كل عملة اصطدتها أصبحت جزءًا من رصيدك."
+              });
+              return;
+            }
+            const response = await callSecureServer("claimTapReward", { caughtCoins });
+            applyServerState(response.player);
+            elements.tapResult.textContent += ` 🎁 أُضيفت ${response.reward.coins.toLocaleString("ar")} نقطة إلى رصيدك.`;
+            showCelebration({
+              icon: "🪙",
+              title: "صيّاد العملات!",
+              reward: `+${response.reward.coins.toLocaleString("ar")} نقطة`,
+              note: "كل عملة اصطدتها أصبحت جزءًا من رصيدك."
+            });
+          } catch (error) {
+            console.error("Tap reward error:", error);
+            elements.tapResult.textContent = "انتهت اللعبة، لكن لم تُضف المكافأة. جرّب بعد قليل.";
+          } finally {
+            elements.startTapGame.disabled = false;
+            elements.startTapGame.textContent = "العب مرة أخرى";
+            updateUI();
+          }
+        }
+
+        function startTapGame() {
+          if (tapGameRunning) return;
+          if (telegramUser && !dataReady) {
+            showTelegramMessage("جاري الاتصال بالخادم الآمن. حاول بعد لحظات.");
+            return;
+          }
+          tapGameRunning = true;
+          tapScore = 0;
+          let secondsLeft = 10;
+          elements.tapScore.textContent = "0";
+          elements.tapTime.textContent = `${secondsLeft} ث`;
+          elements.tapResult.textContent = "";
+          elements.startTapGame.disabled = true;
+          elements.startTapGame.textContent = "اللعبة بدأت";
+          positionTapCoin();
+          tapCoinInterval = window.setInterval(positionTapCoin, 700);
+          tapGameInterval = window.setInterval(() => {
+            secondsLeft -= 1;
+            elements.tapTime.textContent = `${secondsLeft} ث`;
+            if (secondsLeft <= 0) finishTapGame();
+          }, 1000);
+        }
+
+        function catchCoin() {
+          if (!tapGameRunning) return;
+          tapScore += 1;
+          elements.tapScore.textContent = tapScore.toLocaleString("ar");
+          positionTapCoin();
+          if (telegram && telegram.HapticFeedback && preferences.haptics) telegram.HapticFeedback.impactOccurred("light");
+        }
+
+        async function copyWalletId() {
+          const value = elements.walletId.textContent;
+          try {
+            await navigator.clipboard.writeText(value);
+            elements.copyIdButton.textContent = "تم النسخ";
+          } catch {
+            elements.copyIdButton.textContent = "انسخه يدويًا";
+          }
+          window.setTimeout(() => { elements.copyIdButton.textContent = "نسخ"; }, 1700);
+        }
+
+        async function transfer(event) {
+          event.preventDefault();
+          const recipient = elements.receiverId.value.trim();
+          const amount = Number(elements.transferAmount.value);
+          const ownId = `AC-${playerId}`;
+          if (!recipient || !Number.isSafeInteger(amount) || amount < 1) {
+            elements.transferResult.textContent = "أدخل معرّف المستلم وعددًا صحيحًا من العملات.";
+            return;
+          }
+          if (recipient.toUpperCase() === ownId.toUpperCase()) {
+            elements.transferResult.textContent = "لا يمكنك التحويل إلى محفظتك نفسها.";
+            return;
+          }
+          if (amount > state.coins) {
+            elements.transferResult.textContent = "رصيدك لا يكفي لإتمام هذا التحويل.";
+            return;
+          }
+
+          if (!telegramUser) {
+            state.coins -= amount;
+            elements.transferResult.textContent = `تم تسجيل تحويل تجريبي بقيمة ${amount.toLocaleString("ar")} AC إلى ${recipient}.`;
+            elements.transferForm.reset();
+            updateUI();
+            return;
+          }
+
+          elements.transferButton.disabled = true;
+          elements.transferResult.textContent = "جاري إرسال طلب التحويل الآمن...";
+          try {
+            const response = await callSecureServer("transfer", { recipientId: recipient, amount });
+            applyServerState(response.player);
+            elements.transferResult.textContent = `تم تحويل ${amount.toLocaleString("ar")} AC بنجاح.`;
+            elements.transferForm.reset();
+            if (telegram && telegram.HapticFeedback && preferences.haptics) telegram.HapticFeedback.notificationOccurred("success");
+          } catch (error) {
+            console.error("Secure transfer error:", error);
+            elements.transferResult.textContent = "لم يكتمل التحويل. تحتاج هذه الميزة إلى دالة تحويل آمنة في الخادم.";
+          } finally {
+            updateUI();
+          }
+        }
+
+        function applyPreferences() {
+          elements.hapticsToggle.checked = preferences.haptics;
+          elements.animationsToggle.checked = preferences.animations;
+          document.body.classList.toggle("reduce-motion", !preferences.animations);
+          savePreferences();
+        }
+
+        function resetDemoData() {
+          if (telegramUser) {
+            elements.settingsResult.textContent = "لا يمكن إعادة ضبط رصيد تيليجرام من المتصفح؛ يجب أن تُنفّذ من الخادم الآمن.";
+            return;
+          }
+          if (!window.confirm("سيتم حذف نقاط وطاقة وضع التجربة من هذا الجهاز. هل تريد المتابعة؟")) return;
+          state = { ...initialState, energyUpdatedAt: Date.now() };
+          localStorage.removeItem(storageKey);
+          elements.settingsResult.textContent = "تمت إعادة ضبط بيانات التجربة.";
+          updateUI();
+        }
+
+        function spinDemo() {
+          if (spinning || state.energy < SPIN_COST) return;
+          spinning = true;
+          state.energy -= SPIN_COST;
+          state.energyUpdatedAt = Date.now();
+          const index = Math.floor(Math.random() * prizes.length);
+          const prize = prizes[index];
+          const angle = 360 / prizes.length;
+          const desiredRemainder = (360 - (index * angle + angle / 2)) % 360;
+          const currentRemainder = ((rotation % 360) + 360) % 360;
+          const adjustment = (desiredRemainder - currentRemainder + 360) % 360;
+          rotation += 6 * 360 + adjustment;
+          elements.result.textContent = "العجلة تدور في وضع التجربة...";
+          updateUI();
+          elements.wheel.style.transform = `rotate(${rotation}deg)`;
+
+          window.setTimeout(() => {
+            if (prize.type === "coins") state.coins += prize.value;
+            if (prize.type === "energy") state.energy = Math.min(MAX_ENERGY, state.energy + prize.value);
+            spinning = false;
+            elements.result.textContent = `🎉 ربحت ${prize.label}`;
+            showCelebration({
+              icon: prize.type === "energy" ? "⚡" : "🎡",
+              title: "دوران محظوظ!",
+              reward: prize.label,
+              note: prize.type === "energy" ? "طاقة أكثر تعني فرصًا أكثر للفوز." : "رصيدك يكبر مع كل إنجاز."
+            });
+            updateUI();
+          }, 4400);
+        }
+
+        async function spin() {
           refreshEnergy();
           if (spinning) return;
           if (!dataReady) return;
+
+          if (!telegramUser) {
+            spinDemo();
+            return;
+          }
+
           if (state.energy < SPIN_COST) {
             updateUI();
             showTelegramMessage("⚡ تحتاج إلى 20 طاقة على الأقل لتدوير العجلة.");
@@ -419,14 +1018,31 @@
           }
 
           spinning = true;
-          state.energy -= SPIN_COST;
-          state.energyUpdatedAt = Date.now();
-          elements.result.textContent = "العجلة تدور...";
+          elements.result.textContent = "جاري تأكيد الدوران بأمان...";
           updateUI();
-          scheduleCloudSave();
 
-          const index = randomIndex(prizes.length);
-          const prize = prizes[index];
+          let response;
+          try {
+            response = await callSecureServer("spin");
+          } catch (error) {
+            console.error("Secure spin error:", error);
+            spinning = false;
+            elements.result.textContent = "تعذّر تأكيد الدوران. تحقق من اتصالك ثم حاول مرة أخرى.";
+            updateUI();
+            return;
+          }
+
+          if (response.insufficientEnergy) {
+            applyServerState(response.player);
+            spinning = false;
+            elements.result.textContent = "⚡ لا توجد طاقة كافية.";
+            updateUI();
+            showTelegramMessage("⚡ تحتاج إلى 20 طاقة على الأقل لتدوير العجلة.");
+            return;
+          }
+
+          const index = response.prize.index;
+          const prize = response.prize;
           const angle = 360 / prizes.length;
           const desiredRemainder = (360 - (index * angle + angle / 2)) % 360;
           const currentRemainder = ((rotation % 360) + 360) % 360;
@@ -435,20 +1051,47 @@
           elements.wheel.style.transform = `rotate(${rotation}deg)`;
 
           window.setTimeout(() => {
-            if (prize.type === "coins") state.coins += prize.value;
-            if (prize.type === "energy") state.energy = Math.min(MAX_ENERGY, state.energy + prize.value);
+            applyServerState(response.player);
             spinning = false;
             elements.result.textContent = `🎉 مبروك! ربحت ${prize.label}`;
+            showCelebration({
+              icon: prize.type === "energy" ? "⚡" : "🎡",
+              title: "دوران محظوظ!",
+              reward: prize.label,
+              note: prize.type === "energy" ? "طاقة أكثر تعني فرصًا أكثر للفوز." : "رصيدك يكبر مع كل إنجاز."
+            });
             updateUI();
-            scheduleCloudSave();
-            if (telegram && telegram.HapticFeedback) telegram.HapticFeedback.notificationOccurred("success");
+            if (telegram && telegram.HapticFeedback && preferences.haptics) telegram.HapticFeedback.notificationOccurred("success");
           }, 4400);
         }
 
         elements.button.addEventListener("click", spin);
+        elements.navItems.forEach(item => item.addEventListener("click", () => navigateTo(item.dataset.page)));
+        elements.gameTabs.forEach(tab => tab.addEventListener("click", () => navigateGame(tab.dataset.game)));
+        elements.startTapGame.addEventListener("click", startTapGame);
+        elements.tapCoin.addEventListener("click", catchCoin);
+        elements.startMemoryGame.addEventListener("click", startMemoryGame);
+        elements.celebrationClose.addEventListener("click", hideCelebration);
+        elements.celebration.addEventListener("click", event => {
+          if (event.target === elements.celebration) hideCelebration();
+        });
+        elements.copyIdButton.addEventListener("click", copyWalletId);
+        elements.transferForm.addEventListener("submit", transfer);
+        elements.hapticsToggle.addEventListener("change", () => {
+          preferences.haptics = elements.hapticsToggle.checked;
+          applyPreferences();
+        });
+        elements.animationsToggle.addEventListener("change", () => {
+          preferences.animations = elements.animationsToggle.checked;
+          applyPreferences();
+        });
+        elements.resetDemoButton.addEventListener("click", resetDemoData);
         setupProfile();
+        applyPreferences();
+        memoryDeck = shuffle([...memorySymbols, ...memorySymbols]);
+        renderMemoryBoard();
         updateUI();
-        connectFirebase();
+        connectSecureServer();
         window.setInterval(updateUI, 1000);
       })();
     </script>
