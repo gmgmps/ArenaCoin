@@ -59,14 +59,17 @@
       .stat-label { color: var(--muted); font-size: 12px; }
       .stat-value { margin-top: 4px; font-size: 30px; font-weight: 700; direction: ltr; line-height: 1.2; }
       #coins { color: var(--gold); text-shadow: 0 2px 0 var(--gold-deep); }
-      #energyText { color: var(--turquoise); }
-      .energy-row { display: flex; justify-content: space-between; align-items: center; margin: 18px 1px 7px; font-size: 13px; }
-      .energy-row small { color: var(--muted); }
-      /* كل خانة = دورة واحدة (20 طاقة) */
-      .energy-bar { position: relative; height: 14px; overflow: hidden; border-radius: 5px; background: var(--ink); }
-      .energy-bar::after { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(to right, transparent 0 calc(20% - 3px), var(--plate) calc(20% - 3px) 20%); }
-      .energy-fill { width: 100%; height: 100%; background: linear-gradient(90deg, var(--turquoise), #8af3d8); transition: width .35s ease; }
 
+      .stats.one { grid-template-columns: 1fr; }
+      .rounds { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 12px; }
+      .round-chip { display: grid; justify-items: center; gap: 2px; padding: 11px 4px 9px; border-radius: 14px; background: var(--ink); border: 1px solid rgba(255,196,61,.16); text-align: center; }
+      .round-chip.empty { border-color: rgba(255,95,126,.5); }
+      .rc-icon { font-size: 20px; line-height: 22px; }
+      .round-chip b { font-family: var(--display); font-size: 24px; line-height: 1.1; color: var(--gold); direction: ltr; }
+      .round-chip.empty b { color: var(--rose); }
+      .pips { font-style: normal; font-size: 9px; letter-spacing: 2px; color: var(--gold); direction: ltr; }
+      .timer { color: var(--muted); font-size: 11px; direction: ltr; }
+      .rounds-line { margin: 0 0 12px; color: var(--muted); font-size: 12px; }
       .game { padding-top: 28px; text-align: center; }
       .title { margin: 0; font-size: 26px; font-weight: 700; }
       .subtitle { margin: 6px 0 0; color: var(--muted); font-size: 14px; }
@@ -199,12 +202,14 @@
             <div class="caption">لاعب ArenaCoin</div>
           </div>
         </div>
-        <div class="stats">
+        <div class="stats one">
           <div class="stat"><div class="stat-label">النقاط</div><div id="coins" class="stat-value">0</div></div>
-          <div class="stat"><div class="stat-label">الطاقة</div><div><span id="energyText" class="stat-value">100</span><span class="caption"> / 100</span></div></div>
         </div>
-        <div class="energy-row"><span>⚡ شريط الطاقة</span><small id="rechargeText">ممتلئة</small></div>
-        <div class="energy-bar"><div id="energyFill" class="energy-fill"></div></div>
+        <div class="rounds" aria-label="الجولات المتبقية">
+          <div class="round-chip" data-chip="wheel"><span class="rc-icon">🎡</span><b data-count>5</b><i class="pips" data-pips></i><small class="timer" data-timer>جاهزة</small></div>
+          <div class="round-chip" data-chip="tap"><span class="rc-icon">🪙</span><b data-count>5</b><i class="pips" data-pips></i><small class="timer" data-timer>جاهزة</small></div>
+          <div class="round-chip" data-chip="memory"><span class="rc-icon">🧠</span><b data-count>5</b><i class="pips" data-pips></i><small class="timer" data-timer>جاهزة</small></div>
+        </div>
       </section>
 
       <section id="homePage" class="page active" aria-label="الرئيسية">
@@ -219,19 +224,19 @@
         <section id="wheelGame" class="game-panel active" aria-label="عجلة الحظ">
           <div class="game">
             <h2 class="title">🎡 عجلة الحظ</h2>
-            <p class="subtitle">كل دورة تكلّف 20 طاقة</p>
+            <p class="subtitle">5 دورات كل 5 ساعات</p>
             <div class="wheel-area">
               <div class="pointer" aria-hidden="true"></div>
               <div class="wheel-wrap">
                 <div id="wheel" class="wheel" aria-label="عجلة الجوائز">
                   <span class="wheel-label">10</span><span class="wheel-label">25</span><span class="wheel-label">50</span><span class="wheel-label">100</span>
-                  <span class="wheel-label">20⚡</span><span class="wheel-label">30⚡</span><span class="wheel-label">75</span><span class="wheel-label">200</span>
+                  <span class="wheel-label">🔁</span><span class="wheel-label">150</span><span class="wheel-label">75</span><span class="wheel-label">200</span>
                 </div>
               </div>
             </div>
             <button id="spinButton" class="spin-button" type="button">أدر العجلة — 20 ⚡</button>
             <p id="result" class="result" aria-live="polite"></p>
-            <p class="hint">تُشحن طاقة واحدة كل دقيقة.</p>
+            <p class="hint" data-rounds="wheel"></p>
           </div>
         </section>
 
@@ -242,6 +247,7 @@
             <div class="tap-status"><span>النتيجة: <b id="tapScore">0</b></span><span id="tapTime">جاهز</span></div>
             <button id="tapCoin" class="tap-coin" type="button" aria-label="اصطد العملة">🪙</button>
           </div>
+          <p class="rounds-line" data-rounds="tap"></p>
           <button id="startTapGame" class="secondary-button" type="button">ابدأ اللعبة</button>
           <p id="tapResult" class="form-result" aria-live="polite"></p>
         </section>
@@ -251,6 +257,7 @@
           <p>احفظ أماكن الرموز، ثم طابق كل الرموز المتشابهة خلال 30 ثانية.</p>
           <div class="memory-status"><span>الأزواج: <b id="memoryPairs">0</b>/3</span><span id="memoryTime">جاهز</span></div>
           <div id="memoryBoard" class="memory-board" aria-label="بطاقات الذاكرة"></div>
+          <p class="rounds-line" data-rounds="memory"></p>
           <button id="startMemoryGame" class="secondary-button" type="button">ابدأ التحدي</button>
           <p id="memoryResult" class="form-result" aria-live="polite"></p>
         </section>
@@ -263,7 +270,7 @@
           <div id="walletBalance" class="wallet-balance">0</div>
           <div class="wallet-unit">عملة AC</div>
           <div class="wallet-details">
-            <div class="detail-box"><span class="stat-label">الطاقة المتاحة</span><b id="walletEnergy">100</b></div>
+            <div class="detail-box"><span class="stat-label">الجولات المتاحة</span><b id="walletEnergy">15</b></div>
             <div class="detail-box"><span class="stat-label">أفضل نتيجة</span><b id="bestTapScore">0</b></div>
           </div>
           <div class="wallet-id"><code id="walletId">AC-...</code><button id="copyIdButton" class="icon-button" type="button">نسخ</button></div>
@@ -292,6 +299,14 @@
           <div class="setting-row">
             <div><b>الاهتزاز</b><p>اهتزاز خفيف عند الفوز من داخل تيليجرام.</p></div>
             <label class="toggle"><input id="hapticsToggle" type="checkbox" checked /><span></span></label>
+          </div>
+          <div class="setting-row">
+            <div><b>موسيقى الخلفية</b><p>ألحان هادئة بصوت منخفض أثناء اللعب.</p></div>
+            <label class="toggle"><input id="musicToggle" type="checkbox" checked /><span></span></label>
+          </div>
+          <div class="setting-row">
+            <div><b>المؤثرات الصوتية</b><p>أصوات الدوران والعملات والفوز.</p></div>
+            <label class="toggle"><input id="soundToggle" type="checkbox" checked /><span></span></label>
           </div>
           <div class="setting-row">
             <div><b>الحركات</b><p>تشغيل دوران العجلة وانتقال العناصر.</p></div>
@@ -331,9 +346,10 @@
       (() => {
         "use strict";
 
-        const MAX_ENERGY = 100;
-        const SPIN_COST = 20;
-        const RECHARGE_INTERVAL = 60 * 1000;
+        const ROUNDS_PER_PERIOD = 5;
+        const ROUND_PERIOD_MS = 5 * 60 * 60 * 1000;
+        const GAMES = ["wheel", "tap", "memory"];
+        const GAME_NAMES = { wheel: "عجلة الحظ", tap: "اصطد العملة", memory: "تحدي الذاكرة" };
         const FIREBASE_TIMEOUT = 8000;
 
         // لا توجد مفاتيح Firebase أو صلاحية كتابة قاعدة البيانات في المتصفح.
@@ -343,8 +359,8 @@
           { label: "+25 نقطة", type: "coins", value: 25 },
           { label: "+50 نقطة", type: "coins", value: 50 },
           { label: "+100 نقطة", type: "coins", value: 100 },
-          { label: "+20 طاقة", type: "energy", value: 20 },
-          { label: "+30 طاقة", type: "energy", value: 30 },
+          { label: "دورة مجانية", type: "round", value: 1 },
+          { label: "+150 نقطة", type: "coins", value: 150 },
           { label: "+75 نقطة", type: "coins", value: 75 },
           { label: "+200 نقطة", type: "coins", value: 200 }
         ];
@@ -359,13 +375,17 @@
         const user = telegramUser || { id: "demo-player", first_name: "لاعب تجريبي" };
         const playerId = String(user.id);
         const storageKey = `arenaCoin.player.${playerId}`;
-        const initialState = { coins: 0, energy: MAX_ENERGY, energyUpdatedAt: Date.now(), bestTapScore: 0, bestMemoryTime: 0 };
+        const initialState = { coins: 0, rounds: freshRounds(), bestTapScore: 0, bestMemoryTime: 0 };
         let state = loadState();
         let preferences = loadPreferences();
         let spinning = false;
         let rotation = 0;
         let dataReady = !telegramUser;
         let tapScore = 0;
+        let tapCombo = 0;
+        let lastCatchAt = 0;
+        let tapStarting = false;
+        let memoryStarting = false;
         let tapGameRunning = false;
         let tapGameInterval;
         let tapCoinInterval;
@@ -385,9 +405,6 @@
           name: document.getElementById("userName"),
           demoBadge: document.getElementById("demoBadge"),
           coins: document.getElementById("coins"),
-          energy: document.getElementById("energyText"),
-          energyFill: document.getElementById("energyFill"),
-          recharge: document.getElementById("rechargeText"),
           wheel: document.getElementById("wheel"),
           button: document.getElementById("spinButton"),
           result: document.getElementById("result"),
@@ -423,6 +440,8 @@
           celebrationClose: document.getElementById("celebrationClose"),
           confettiLayer: document.getElementById("confettiLayer"),
           hapticsToggle: document.getElementById("hapticsToggle"),
+          musicToggle: document.getElementById("musicToggle"),
+          soundToggle: document.getElementById("soundToggle"),
           animationsToggle: document.getElementById("animationsToggle"),
           resetDemoButton: document.getElementById("resetDemoButton"),
           settingsResult: document.getElementById("settingsResult"),
@@ -430,14 +449,145 @@
           pages: document.querySelectorAll(".page")
         };
 
+        // ===== الأصوات: كلها مولّدة بالكود (بدون ملفات)، هادئة ومنخفضة =====
+        const sound = (() => {
+          let ctx, master, sfxBus, musicBus, musicTimer, chordIndex = 0;
+          const PENTA = [523.25, 587.33, 659.25, 783.99, 880, 1046.5, 1174.66];
+          const CHORDS = [[220, 261.63, 329.63], [174.61, 220, 261.63], [261.63, 329.63, 392], [196, 246.94, 293.66]];
+          const MELODY = [440, 523.25, 587.33, 659.25, 783.99];
+
+          function ready() {
+            if (!ctx) {
+              const AC = window.AudioContext || window.webkitAudioContext;
+              if (!AC) return false;
+              ctx = new AC();
+              const soften = ctx.createBiquadFilter();
+              soften.type = "lowpass";
+              soften.frequency.value = 4800;
+              master = ctx.createGain();
+              master.gain.value = .85;
+              master.connect(soften);
+              soften.connect(ctx.destination);
+              sfxBus = ctx.createGain();
+              sfxBus.gain.value = .6;
+              sfxBus.connect(master);
+              musicBus = ctx.createGain();
+              musicBus.gain.value = 0;
+              musicBus.connect(master);
+            }
+            if (ctx.state === "suspended") ctx.resume();
+            return true;
+          }
+
+          function tone(freq, at, dur, { type = "sine", vol = .25, bus = sfxBus, attack = .008, to } = {}) {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = type;
+            osc.frequency.setValueAtTime(freq, at);
+            if (to) osc.frequency.exponentialRampToValueAtTime(to, at + dur);
+            gain.gain.setValueAtTime(.0001, at);
+            gain.gain.exponentialRampToValueAtTime(vol, at + attack);
+            gain.gain.exponentialRampToValueAtTime(.0001, at + dur);
+            osc.connect(gain);
+            gain.connect(bus);
+            osc.start(at);
+            osc.stop(at + dur + .05);
+          }
+
+          function sfx(play) {
+            if (!preferences.sfx || !ready()) return;
+            play(ctx.currentTime);
+          }
+
+          // خفض الموسيقى لحظة الفوز ثم إعادتها
+          function duck() {
+            if (!musicBus || !preferences.music) return;
+            const t = ctx.currentTime;
+            musicBus.gain.cancelScheduledValues(t);
+            musicBus.gain.setTargetAtTime(.04, t, .08);
+            musicBus.gain.setTargetAtTime(.2, t + 1.8, .6);
+          }
+
+          function musicStep() {
+            if (!ctx || !preferences.music || document.hidden) return;
+            const t = ctx.currentTime;
+            CHORDS[chordIndex % CHORDS.length].forEach((f, i) => tone(f, t + i * .05, 3.4, { type: "triangle", vol: .11, attack: 1, bus: musicBus }));
+            chordIndex += 1;
+            for (let i = 0; i < 3; i += 1) {
+              if (Math.random() < .55) tone(MELODY[Math.floor(Math.random() * MELODY.length)], t + .5 + i * .8, 1.5, { vol: .09, attack: .02, bus: musicBus });
+            }
+          }
+
+          function startMusic() {
+            if (!preferences.music || !ready() || musicTimer) return;
+            musicBus.gain.cancelScheduledValues(ctx.currentTime);
+            musicBus.gain.setTargetAtTime(.2, ctx.currentTime, 1.2);
+            musicStep();
+            musicTimer = window.setInterval(musicStep, 3200);
+          }
+
+          function stopMusic() {
+            window.clearInterval(musicTimer);
+            musicTimer = null;
+            if (musicBus) musicBus.gain.setTargetAtTime(0, ctx.currentTime, .4);
+          }
+
+          document.addEventListener("visibilitychange", () => {
+            if (document.hidden) stopMusic();
+            else if (preferences.music && ctx) startMusic();
+          });
+
+          return {
+            unlock() { if (preferences.music) startMusic(); else ready(); },
+            apply() { if (preferences.music) startMusic(); else if (ctx) stopMusic(); },
+            click() { sfx(t => tone(720, t, .06, { vol: .12, to: 520 })); },
+            // نقرات العجلة تبطئ مع تباطؤها فتزيد التشويق
+            spinTicks(ms) {
+              sfx(t => {
+                const count = 54;
+                for (let k = 1; k <= count; k += 1) {
+                  const at = t + (ms / 1000) * (1 - Math.pow(1 - k / count, 1 / 3.3));
+                  tone(k === count ? 1500 : 1150 + (k % 2) * 90, at, .035, { type: "triangle", vol: k > count - 6 ? .2 : .11 });
+                }
+              });
+            },
+            coinDing(combo) {
+              sfx(t => {
+                const f = PENTA[Math.min(combo, PENTA.length - 1)];
+                tone(f, t, .35, { vol: .22 });
+                tone(f * 2, t, .22, { vol: .08 });
+              });
+            },
+            flip() { sfx(t => tone(480, t, .07, { vol: .14, to: 340 })); },
+            match() { sfx(t => { tone(659.25, t, .18, { vol: .2 }); tone(880, t + .09, .28, { vol: .2 }); }); },
+            miss() { sfx(t => tone(240, t, .16, { type: "triangle", vol: .13, to: 190 })); },
+            tickTock() { sfx(t => tone(880, t, .08, { vol: .13 })); },
+            timeUp() { sfx(t => { tone(587.33, t, .18, { vol: .17 }); tone(440, t + .16, .32, { vol: .17 }); }); },
+            win(big) {
+              if (!preferences.sfx || !ready()) return;
+              duck();
+              const t = ctx.currentTime;
+              const notes = big ? [523.25, 659.25, 783.99, 1046.5, 1318.5] : [523.25, 659.25, 783.99];
+              notes.forEach((f, i) => {
+                tone(f, t + i * .09, .55, { vol: .2 });
+                tone(f / 2, t + i * .09, .45, { type: "triangle", vol: .08 });
+              });
+            },
+            coinShower() {
+              sfx(t => {
+                for (let i = 0; i < 9; i += 1) tone(PENTA[Math.floor(Math.random() * PENTA.length)] * 2, t + .3 + i * .1 + Math.random() * .05, .2, { vol: .07 });
+              });
+            }
+          };
+        })();
+
         function loadState() {
           try {
             const saved = JSON.parse(localStorage.getItem(storageKey));
             if (!saved || typeof saved !== "object") return { ...initialState };
             return {
               coins: Number.isFinite(saved.coins) ? Math.max(0, saved.coins) : 0,
-              energy: Number.isFinite(saved.energy) ? Math.min(MAX_ENERGY, Math.max(0, saved.energy)) : MAX_ENERGY,
-              energyUpdatedAt: Number.isFinite(saved.energyUpdatedAt) ? saved.energyUpdatedAt : Date.now(),
+              rounds: normRounds(saved.rounds),
               bestTapScore: Number.isFinite(saved.bestTapScore) ? Math.max(0, saved.bestTapScore) : 0,
               bestMemoryTime: Number.isFinite(saved.bestMemoryTime) ? Math.max(0, saved.bestMemoryTime) : 0
             };
@@ -455,10 +605,12 @@
             const saved = JSON.parse(localStorage.getItem(`${storageKey}.settings`));
             return {
               haptics: saved?.haptics !== false,
-              animations: saved?.animations !== false
+              animations: saved?.animations !== false,
+              music: saved?.music !== false,
+              sfx: saved?.sfx !== false
             };
           } catch {
-            return { haptics: true, animations: true };
+            return { haptics: true, animations: true, music: true, sfx: true };
           }
         }
 
@@ -470,41 +622,79 @@
           elements.cloudStatus.textContent = message;
         }
 
-        function refreshEnergy() {
-          if (state.energy >= MAX_ENERGY) {
-            state.energy = MAX_ENERGY;
-            state.energyUpdatedAt = Date.now();
-            return false;
-          }
-          const elapsed = Date.now() - state.energyUpdatedAt;
-          const recovered = Math.floor(elapsed / RECHARGE_INTERVAL);
-          if (recovered <= 0) return false;
-          state.energy = Math.min(MAX_ENERGY, state.energy + recovered);
-          state.energyUpdatedAt += recovered * RECHARGE_INTERVAL;
+        function arDigits(value) {
+          return String(value).replace(/\d/g, digit => "٠١٢٣٤٥٦٧٨٩"[digit]);
+        }
+
+        function freshRounds() {
+          const rounds = {};
+          GAMES.forEach(game => { rounds[game] = { left: ROUNDS_PER_PERIOD, resetAt: 0 }; });
+          return rounds;
+        }
+
+        function normRounds(raw) {
+          const now = Date.now();
+          const rounds = {};
+          GAMES.forEach(game => {
+            const r = (raw && raw[game]) || {};
+            let left = Number.isFinite(r.left) ? Math.min(ROUNDS_PER_PERIOD, Math.max(0, Math.floor(r.left))) : ROUNDS_PER_PERIOD;
+            let resetAt = Number.isFinite(r.resetAt) ? r.resetAt : 0;
+            if ((resetAt && now >= resetAt) || left >= ROUNDS_PER_PERIOD) {
+              left = ROUNDS_PER_PERIOD;
+              resetAt = 0;
+            }
+            rounds[game] = { left, resetAt };
+          });
+          return rounds;
+        }
+
+        function refreshRounds() {
+          state.rounds = normRounds(state.rounds);
+        }
+
+        function useRoundLocal(game) {
+          refreshRounds();
+          const round = state.rounds[game];
+          if (round.left <= 0) return false;
+          if (round.left === ROUNDS_PER_PERIOD) round.resetAt = Date.now() + ROUND_PERIOD_MS;
+          round.left -= 1;
           return true;
         }
 
-        function formatTime(milliseconds) {
-          const seconds = Math.max(1, Math.ceil(milliseconds / 1000));
-          return `طاقة جديدة خلال ${seconds} ث`;
+        function fmtClock(milliseconds) {
+          const total = Math.max(0, Math.ceil(milliseconds / 1000));
+          const pad = n => String(n).padStart(2, "0");
+          return arDigits(`${Math.floor(total / 3600)}:${pad(Math.floor((total % 3600) / 60))}:${pad(total % 60)}`);
+        }
+
+        function roundsLine(game) {
+          const round = state.rounds[game];
+          let line = `الجولات المتبقية: ${arDigits(round.left)} من ${arDigits(ROUNDS_PER_PERIOD)}`;
+          if (round.left < ROUNDS_PER_PERIOD && round.resetAt) line += `، وتتجدد بعد ${fmtClock(round.resetAt - Date.now())}`;
+          return line;
+        }
+
+        function noRoundsMessage(game) {
+          return `انتهت جولات ${GAME_NAMES[game]}. ${roundsLine(game).split("، ")[1] || ""}`.trim();
         }
 
         function updateUI() {
-          refreshEnergy();
+          refreshRounds();
           elements.coins.textContent = state.coins.toLocaleString("ar");
-          elements.energy.textContent = state.energy.toLocaleString("ar");
-          elements.energyFill.style.width = `${state.energy}%`;
-          elements.button.disabled = !dataReady || spinning || state.energy < SPIN_COST;
+          elements.button.disabled = !dataReady || spinning || state.rounds.wheel.left <= 0;
           elements.walletBalance.textContent = state.coins.toLocaleString("ar");
-          elements.walletEnergy.textContent = state.energy.toLocaleString("ar");
+          elements.walletEnergy.textContent = arDigits(GAMES.reduce((sum, game) => sum + state.rounds[game].left, 0));
           elements.bestTapScore.textContent = state.bestTapScore.toLocaleString("ar");
           elements.transferButton.disabled = !dataReady;
-          if (state.energy === MAX_ENERGY) {
-            elements.recharge.textContent = "ممتلئة";
-          } else {
-            const nextEnergyIn = RECHARGE_INTERVAL - ((Date.now() - state.energyUpdatedAt) % RECHARGE_INTERVAL);
-            elements.recharge.textContent = formatTime(nextEnergyIn);
-          }
+          GAMES.forEach(game => {
+            const round = state.rounds[game];
+            const chip = document.querySelector(`[data-chip="${game}"]`);
+            chip.querySelector("[data-count]").textContent = arDigits(round.left);
+            chip.querySelector("[data-pips]").textContent = "●".repeat(round.left) + "○".repeat(ROUNDS_PER_PERIOD - round.left);
+            chip.querySelector("[data-timer]").textContent = round.left < ROUNDS_PER_PERIOD && round.resetAt ? fmtClock(round.resetAt - Date.now()) : "جاهزة";
+            chip.classList.toggle("empty", round.left <= 0);
+          });
+          document.querySelectorAll("[data-rounds]").forEach(el => { el.textContent = roundsLine(el.dataset.rounds); });
           saveState();
         }
 
@@ -524,8 +714,7 @@
 
         function applyServerState(player) {
           if (Number.isFinite(player?.coins)) state.coins = Math.max(0, player.coins);
-          if (Number.isFinite(player?.energy)) state.energy = Math.min(MAX_ENERGY, Math.max(0, player.energy));
-          if (Number.isFinite(player?.energyUpdatedAt)) state.energyUpdatedAt = player.energyUpdatedAt;
+          if (player?.rounds) state.rounds = normRounds(player.rounds);
         }
 
         async function callSecureServer(endpoint, payload = {}) {
@@ -566,7 +755,7 @@
           } catch (error) {
             console.error("Secure server connection error:", error);
             dataReady = false;
-            setCloudStatus("⚠️ الخادم الآمن غير متاح بعد. انشر Cloud Functions ثم أعد فتح التطبيق.");
+            setCloudStatus("⚠️ الخادم الآمن غير متاح الآن. تحقق من نشر الخادم على Vercel ثم أعد فتح التطبيق.");
             updateUI();
           }
         }
@@ -579,6 +768,7 @@
         function navigateTo(pageName) {
           elements.pages.forEach(page => page.classList.toggle("active", page.id === `${pageName}Page`));
           elements.navItems.forEach(item => item.classList.toggle("active", item.dataset.page === pageName));
+          sound.click();
           if (telegram && telegram.HapticFeedback && preferences.haptics) telegram.HapticFeedback.selectionChanged();
           window.scrollTo({ top: 0, behavior: preferences.animations ? "smooth" : "auto" });
         }
@@ -590,6 +780,7 @@
             tab.classList.toggle("active", active);
             tab.setAttribute("aria-selected", String(active));
           });
+          sound.click();
           if (telegram && telegram.HapticFeedback && preferences.haptics) telegram.HapticFeedback.selectionChanged();
         }
 
@@ -600,7 +791,10 @@
         }
 
         function showCelebration({ icon = "🎉", title = "مبروك يا بطل!", reward, note = "كل لعبة تقرّبك من رصيد أكبر." }) {
-          const colors = ["#ffcf4a", "#35d8ff", "#6ff0a7", "#ff7c73", "#b98aff"];
+          const colors = ["#ffc43d", "#34d3b4", "#ff5f7e", "#f2793f", "#b99aff"];
+          const amount = Number(String(reward).replace(/[٠-٩]/g, d => "٠١٢٣٤٥٦٧٨٩".indexOf(d)).replace(/\D/g, "")) || 0;
+          sound.win(amount >= 100);
+          sound.coinShower();
           window.clearTimeout(celebrationTimer);
           elements.celebrationIcon.textContent = icon;
           elements.celebrationTitle.textContent = title;
@@ -670,6 +864,7 @@
           elements.memoryResult.textContent = message;
           elements.memoryPairs.textContent = memoryPairs.toLocaleString("ar");
           elements.memoryTime.textContent = memorySecondsLeft === 0 ? "انتهى" : "تم";
+          if (memorySecondsLeft === 0) sound.timeUp();
           saveState();
         }
 
@@ -719,7 +914,14 @@
           }
         }
 
-        function startMemoryGame() {
+        async function startMemoryGame() {
+          if (memoryStarting) return;
+          memoryStarting = true;
+          elements.startMemoryGame.disabled = true;
+          const roundOk = await consumeRound("memory");
+          memoryStarting = false;
+          elements.startMemoryGame.disabled = false;
+          if (!roundOk) return;
           window.clearInterval(memoryTimer);
           window.clearTimeout(memoryPreviewTimer);
           window.clearTimeout(memoryFlipTimer);
@@ -762,6 +964,7 @@
           if (card.classList.contains("flipped") || card.classList.contains("matched") || memorySelected.length === 2) return;
           card.classList.add("flipped");
           card.textContent = card.dataset.symbol;
+          sound.flip();
           memorySelected.push({ index, card });
           if (telegram && telegram.HapticFeedback && preferences.haptics) telegram.HapticFeedback.impactOccurred("light");
           if (memorySelected.length !== 2) return;
@@ -772,11 +975,13 @@
             second.card.classList.add("matched");
             memorySelected = [];
             memoryPairs += 1;
+            sound.match();
             updateMemoryStatus();
             if (memoryPairs === memorySymbols.length) finishMemoryGame();
             return;
           }
 
+          sound.miss();
           memoryFlipTimer = window.setTimeout(() => {
             [first, second].forEach(selected => {
               selected.card.classList.remove("flipped");
@@ -796,6 +1001,7 @@
         }
 
         function finishTapGame() {
+          sound.timeUp();
           window.clearInterval(tapGameInterval);
           window.clearInterval(tapCoinInterval);
           tapGameRunning = false;
@@ -849,12 +1055,41 @@
           }
         }
 
-        function startTapGame() {
-          if (tapGameRunning) return;
+        async function consumeRound(game) {
+          const resultEl = game === "tap" ? elements.tapResult : elements.memoryResult;
+          if (!telegramUser) {
+            const ok = useRoundLocal(game);
+            if (!ok) { sound.miss(); resultEl.textContent = noRoundsMessage(game); }
+            updateUI();
+            return ok;
+          }
+          try {
+            const response = await callSecureServer("startRound", { game });
+            applyServerState(response.player);
+            updateUI();
+            if (response.noRounds) { sound.miss(); resultEl.textContent = noRoundsMessage(game); return false; }
+            return true;
+          } catch (error) {
+            console.error("Start round error:", error);
+            resultEl.textContent = "تعذّر بدء الجولة. تحقق من اتصالك وحاول مرة أخرى.";
+            return false;
+          }
+        }
+
+        async function startTapGame() {
+          if (tapGameRunning || tapStarting) return;
           if (telegramUser && !dataReady) {
             showTelegramMessage("جاري الاتصال بالخادم الآمن. حاول بعد لحظات.");
             return;
           }
+          tapStarting = true;
+          elements.startTapGame.disabled = true;
+          const roundOk = await consumeRound("tap");
+          tapStarting = false;
+          elements.startTapGame.disabled = false;
+          if (!roundOk) return;
+          tapCombo = 0;
+          lastCatchAt = 0;
           tapGameRunning = true;
           tapScore = 0;
           let secondsLeft = 10;
@@ -868,12 +1103,17 @@
           tapGameInterval = window.setInterval(() => {
             secondsLeft -= 1;
             elements.tapTime.textContent = `${secondsLeft} ث`;
+            if (secondsLeft > 0 && secondsLeft <= 3) sound.tickTock();
             if (secondsLeft <= 0) finishTapGame();
           }, 1000);
         }
 
         function catchCoin() {
           if (!tapGameRunning) return;
+          const caughtAt = Date.now();
+          tapCombo = caughtAt - lastCatchAt < 1300 ? tapCombo + 1 : 0;
+          lastCatchAt = caughtAt;
+          sound.coinDing(tapCombo);
           tapScore += 1;
           elements.tapScore.textContent = tapScore.toLocaleString("ar");
           positionTapCoin();
@@ -936,8 +1176,11 @@
         function applyPreferences() {
           elements.hapticsToggle.checked = preferences.haptics;
           elements.animationsToggle.checked = preferences.animations;
+          elements.musicToggle.checked = preferences.music;
+          elements.soundToggle.checked = preferences.sfx;
           document.body.classList.toggle("reduce-motion", !preferences.animations);
           savePreferences();
+          sound.apply();
         }
 
         function resetDemoData() {
@@ -945,18 +1188,22 @@
             elements.settingsResult.textContent = "لا يمكن إعادة ضبط رصيد تيليجرام من المتصفح؛ يجب أن تُنفّذ من الخادم الآمن.";
             return;
           }
-          if (!window.confirm("سيتم حذف نقاط وطاقة وضع التجربة من هذا الجهاز. هل تريد المتابعة؟")) return;
-          state = { ...initialState, energyUpdatedAt: Date.now() };
+          if (!window.confirm("سيتم حذف نقاط وجولات وضع التجربة من هذا الجهاز. هل تريد المتابعة؟")) return;
+          state = { ...initialState, rounds: freshRounds() };
           localStorage.removeItem(storageKey);
           elements.settingsResult.textContent = "تمت إعادة ضبط بيانات التجربة.";
           updateUI();
         }
 
         function spinDemo() {
-          if (spinning || state.energy < SPIN_COST) return;
+          if (spinning) return;
+          if (!useRoundLocal("wheel")) {
+            sound.miss();
+            elements.result.textContent = noRoundsMessage("wheel");
+            updateUI();
+            return;
+          }
           spinning = true;
-          state.energy -= SPIN_COST;
-          state.energyUpdatedAt = Date.now();
           const index = Math.floor(Math.random() * prizes.length);
           const prize = prizes[index];
           const angle = 360 / prizes.length;
@@ -967,24 +1214,29 @@
           elements.result.textContent = "العجلة تدور في وضع التجربة...";
           updateUI();
           elements.wheel.style.transform = `rotate(${rotation}deg)`;
+          sound.spinTicks(4400);
 
           window.setTimeout(() => {
             if (prize.type === "coins") state.coins += prize.value;
-            if (prize.type === "energy") state.energy = Math.min(MAX_ENERGY, state.energy + prize.value);
+            if (prize.type === "round") {
+              const round = state.rounds.wheel;
+              round.left = Math.min(ROUNDS_PER_PERIOD, round.left + 1);
+              if (round.left >= ROUNDS_PER_PERIOD) round.resetAt = 0;
+            }
             spinning = false;
             elements.result.textContent = `🎉 ربحت ${prize.label}`;
             showCelebration({
-              icon: prize.type === "energy" ? "⚡" : "🎡",
+              icon: prize.type === "round" ? "🔁" : "🎡",
               title: "دوران محظوظ!",
               reward: prize.label,
-              note: prize.type === "energy" ? "طاقة أكثر تعني فرصًا أكثر للفوز." : "رصيدك يكبر مع كل إنجاز."
+              note: prize.type === "round" ? "دورة مجانية! أعد التدوير بدون خسارة جولة." : "رصيدك يكبر مع كل إنجاز."
             });
             updateUI();
           }, 4400);
         }
 
         async function spin() {
-          refreshEnergy();
+          refreshRounds();
           if (spinning) return;
           if (!dataReady) return;
 
@@ -993,9 +1245,10 @@
             return;
           }
 
-          if (state.energy < SPIN_COST) {
+          if (state.rounds.wheel.left <= 0) {
+            sound.miss();
+            elements.result.textContent = noRoundsMessage("wheel");
             updateUI();
-            showTelegramMessage("⚡ تحتاج إلى 20 طاقة على الأقل لتدوير العجلة.");
             return;
           }
 
@@ -1014,12 +1267,12 @@
             return;
           }
 
-          if (response.insufficientEnergy) {
+          if (response.noRounds) {
             applyServerState(response.player);
             spinning = false;
-            elements.result.textContent = "⚡ لا توجد طاقة كافية.";
+            sound.miss();
+            elements.result.textContent = noRoundsMessage("wheel");
             updateUI();
-            showTelegramMessage("⚡ تحتاج إلى 20 طاقة على الأقل لتدوير العجلة.");
             return;
           }
 
@@ -1031,16 +1284,17 @@
           const adjustment = (desiredRemainder - currentRemainder + 360) % 360;
           rotation += 6 * 360 + adjustment;
           elements.wheel.style.transform = `rotate(${rotation}deg)`;
+          sound.spinTicks(4400);
 
           window.setTimeout(() => {
             applyServerState(response.player);
             spinning = false;
             elements.result.textContent = `🎉 مبروك! ربحت ${prize.label}`;
             showCelebration({
-              icon: prize.type === "energy" ? "⚡" : "🎡",
+              icon: prize.type === "round" ? "🔁" : "🎡",
               title: "دوران محظوظ!",
               reward: prize.label,
-              note: prize.type === "energy" ? "طاقة أكثر تعني فرصًا أكثر للفوز." : "رصيدك يكبر مع كل إنجاز."
+              note: prize.type === "round" ? "دورة مجانية! أعد التدوير بدون خسارة جولة." : "رصيدك يكبر مع كل إنجاز."
             });
             updateUI();
             if (telegram && telegram.HapticFeedback && preferences.haptics) telegram.HapticFeedback.notificationOccurred("success");
@@ -1067,6 +1321,16 @@
           preferences.animations = elements.animationsToggle.checked;
           applyPreferences();
         });
+        elements.musicToggle.addEventListener("change", () => {
+          preferences.music = elements.musicToggle.checked;
+          applyPreferences();
+        });
+        elements.soundToggle.addEventListener("change", () => {
+          preferences.sfx = elements.soundToggle.checked;
+          applyPreferences();
+          sound.click();
+        });
+        window.addEventListener("pointerdown", () => sound.unlock(), { once: true });
         elements.resetDemoButton.addEventListener("click", resetDemoData);
         setupProfile();
         applyPreferences();
